@@ -1,31 +1,60 @@
 body {
-    background-color: #0d0d0d;
+    background: linear-gradient(to bottom, #0d0d0d, #050505);
     color: #e6e6e6;
     font-family: 'Georgia', serif;
     margin: 0;
-    padding: 0;
 }
 
 header {
     text-align: center;
-    padding: 50px 20px;
+    padding: 80px 20px;
+    opacity: 0;
+    animation: fadeIn 2s ease forwards;
 }
 
-h1 {
-    font-size: 2.5rem;
-    letter-spacing: 2px;
-}
-
-.poems {
-    max-width: 700px;
-    margin: auto;
-    padding: 20px;
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
 }
 
 .poem {
-    margin-bottom: 40px;
+    margin-bottom: 60px;
+    line-height: 1.8;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease;
 }
 
-.poem h2 {
-    color: #aaaaaa;
+.poem.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.poem-text {
+    white-space: pre-line;
+    line-height: 1.8;
+}
+
+.poem-page {
+    max-width: 700px;
+    margin: 80px auto;
+    padding: 20px;
+}
+
+.poem-page h1 {
+    margin-bottom: 30px;
+}
+
+.poem-text {
+    white-space: pre-line;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+nav a {
+    display: block;
+    margin: 20px;
+    color: #aaa;
+    text-decoration: none;
 }
