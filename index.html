@@ -2,53 +2,93 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lilpoet Ezra</title>
-
-    <!-- Link CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
 
-    <!-- Header -->
-    <header>
-        <h1>Lilpoet Ezra</h1>
-        <p>Fragments of thought, inked in silence</p>
-    </header>
+    <main class="shell">
+        <section class="hero card">
+            <div class="hero-copy">
+                <p class="eyebrow">Poetry studio</p>
+                <h1>Lilpoet Ezra</h1>
+                <p class="subtitle">
+                    A clean space to write, save, and read your poems with realtime updates.
+                </p>
+            </div>
 
-    <!-- Poems List -->
-    <section class="poems">
+            <div class="hero-meta">
+                <div class="stats">
+                    <div class="stat">
+                        <span id="poemCount">0</span>
+                        <small>Poems</small>
+                    </div>
+                    <div class="stat">
+                        <span id="charCount">0</span>
+                        <small>Chars typed</small>
+                    </div>
+                </div>
+                <button id="audioToggleBtn" type="button" class="btn-secondary" aria-pressed="false">
+                    Play lofi mode
+                </button>
+            </div>
+        </section>
 
-        <!-- Poem 1 -->
-        <div class="poem">
-            <h2>
-                <a href="poems/weight-of-hope.html">
-                    The Weight of Hope
-                </a>
-            </h2>
-        </div>
+        <section class="layout">
+            <article class="card composer">
+                <div class="section-head">
+                    <h2>New poem</h2>
+                    <span class="pill">Firestore live</span>
+                </div>
 
-        <!-- Poem 2 (example) -->
-        <div class="poem">
-            <h2>
-                <a href="poems/midnight-nairobi.html">
-                    Midnight on a Nairobi Rooftop
-                </a>
-            </h2>
-        </div>
+                <form id="poemForm" class="form">
+                    <label class="field">
+                        <span>Author</span>
+                        <input id="authorInput" type="text" placeholder="Your name" maxlength="60"
+                            autocomplete="off" />
+                    </label>
 
-    </section>
+                    <label class="field">
+                        <span>Title</span>
+                        <input id="titleInput" type="text" placeholder="Enter poem title" maxlength="80"
+                            autocomplete="off" />
+                    </label>
 
-    <!-- Footer -->
-    <footer>
-        <p>© Lilpoet Ezra</p>
-    </footer>
+                    <label class="field">
+                        <span>Poem</span>
+                        <textarea id="contentInput" placeholder="Write your poem here..." rows="10"
+                            maxlength="5000"></textarea>
+                    </label>
 
-    <!-- JS -->
-    <script src="script.js"></script>
+                    <div class="form-footer">
+                        <p id="statusText" class="status">Ready to write.</p>
+                        <button id="submitBtn" type="submit" class="btn-primary">Save poem</button>
+                    </div>
+                </form>
+            </article>
 
+            <article class="card feed">
+                <div class="section-head">
+                    <h2>Poem feed</h2>
+                    <label class="search">
+                        <span>Search</span>
+                        <input id="searchInput" type="text" placeholder="Search titles or text..." autocomplete="off" />
+                    </label>
+                </div>
+
+                <div id="poemsContainer" class="poems"></div>
+            </article>
+        </section>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <script type="module" src="script.js"></script>
 </body>
 
 </html>
