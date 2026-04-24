@@ -67,8 +67,8 @@
                         aria-controls="authForm">
                         <span class="auth-toggle-copy">
                             <span class="auth-toggle-title">Sign in to add your poem</span>
-                            <span class="auth-toggle-subtitle">Browse all uploaded poems anytime. Open this section when
-                                you are ready to share your own voice.</span>
+                            <span class="auth-toggle-subtitle">Coming soon: Sign in to contribute your own poems to the
+                                collection. For now, enjoy reading the existing poems.</span>
                         </span>
                         <span class="auth-toggle-icon" aria-hidden="true"></span>
                     </button>
@@ -89,21 +89,6 @@
                     </div>
                     <div class="auth-status compact">
                         <p id="authState" class="auth-state">You can view poems below without signing in.</p>
-                        <div id="claimTools" class="claim-tools hidden">
-                            <p class="claim-help">Claim older poems that were uploaded before ownership was attached.
-                            </p>
-                            <div class="claim-actions">
-                                <button id="claimByEmailBtn" type="button" class="btn-secondary">Claim by email</button>
-                            </div>
-                            <label class="field claim-field">
-                                <span>Or check poems by author name</span>
-                                <input id="claimAuthorInput" type="text" placeholder="Exact author name on old poems"
-                                    maxlength="60" autocomplete="off" />
-                            </label>
-                            <button id="findAuthorMatchesBtn" type="button" class="btn-secondary">Find author
-                                matches</button>
-                            <p id="claimStatus" class="claim-status"></p>
-                        </div>
                         <button id="signOutBtn" type="button" class="btn-secondary hidden">Sign out</button>
                     </div>
                 </div>
@@ -129,17 +114,9 @@
                     </label>
 
                     <label class="field">
-                        <span>Category (optional)</span>
-                        <select id="categoryInput">
-                            <option value="">Select a category...</option>
-                            <option value="love">Love & Romance</option>
-                            <option value="nature">Nature & Environment</option>
-                            <option value="life">Life & Reflection</option>
-                            <option value="social">Social & Political</option>
-                            <option value="spiritual">Spiritual & Faith</option>
-                            <option value="personal">Personal Growth</option>
-                            <option value="other">Other</option>
-                        </select>
+                        <span>Category</span>
+                        <input id="categoryInput" type="hidden" value="love" />
+                        <div class="field-note">All new poems are published to Love & Romance.</div>
                     </label>
 
                     <label class="field">

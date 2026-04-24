@@ -33,6 +33,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+console.log("Firebase auth initialized", {
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId,
+    apiKey: firebaseConfig.apiKey,
+    appId: firebaseConfig.appId,
+    origin: window.location.origin,
+    protocol: window.location.protocol
+});
+
 const poemForm = document.getElementById("poemForm");
 const authorInput = document.getElementById("authorInput");
 const titleInput = document.getElementById("titleInput");
@@ -56,11 +65,6 @@ const signOutBtn = document.getElementById("signOutBtn");
 const authForm = document.getElementById("authForm");
 const authSection = document.getElementById("authSection");
 const authToggleBtn = document.getElementById("authToggleBtn");
-const claimTools = document.getElementById("claimTools");
-const claimByEmailBtn = document.getElementById("claimByEmailBtn");
-const claimAuthorInput = document.getElementById("claimAuthorInput");
-const findAuthorMatchesBtn = document.getElementById("findAuthorMatchesBtn");
-const claimStatus = document.getElementById("claimStatus");
 const shell = document.querySelector(".shell");
 const introScreen = document.getElementById("intro-screen");
 const enterBtn = document.getElementById("enter-btn");
@@ -134,7 +138,6 @@ let currentUser = null;
 let initialLoad = true;
 let authSectionExpanded = false;
 let migratedUserId = null;
-let claiming = false;
 
 function escapeHtml(value) {
     return value
@@ -149,16 +152,61 @@ function normalizeText(value) {
     return (value || "").trim().replace(/\s+/g, " ").toLowerCase();
 }
 
-function setClaimStatus(message, type = "") {
-    if (!claimStatus) return;
-    claimStatus.textContent = message;
-    claimStatus.className = type ? `claim-status ${type}` : "claim-status";
+function getAuthDiagnostic() {
+    const origin = window.location.origin;
+    const protocol = window.location.protocol;
+    return {
+        origin,
+        protocol,
+        authDomain: firebaseConfig.authDomain,
+        projectId: firebaseConfig.projectId,
+        apiKey: firebaseConfig.apiKey,
+        appId: firebaseConfig.appId
+    };
+}
+
+function formatFirebaseAuthError(error) {
+    let message = "Could not sign in.";
+    if (!error || !error.code) {
+        return message;
+    }
+
+    if (error.code === "auth/user-not-found") {
+        return "No account found with this email.";
+    }
+    if (error.code === "auth/wrong-password") {
+        return "Incorrect password.";
+    }
+    if (error.code === "auth/invalid-email") {
+        return "Invalid email address.";
+    }
+    if (error.code === "auth/weak-password") {
+        return "Password is too weak.";
+    }
+    if (error.code === "auth/email-already-in-use") {
+        return "An account with this email already exists.";
+    }
+    if (error.code === "auth/invalid-credential") {
+        const diag = getAuthDiagnostic();
+        console.warn("Firebase invalid credential details:", { error, diag });
+        return "Firebase rejected the sign-in request. Check that Email/Password auth is enabled and that your Firebase configuration matches the project.";
+    }
+    if (error.code === "auth/configuration-not-found") {
+        const diag = getAuthDiagnostic();
+        console.warn("Firebase auth configuration diagnostics:", diag);
+        if (diag.protocol === "file:") {
+            return "Firebase auth cannot run from a file:// page. Use a local web server or localhost origin.";
+        }
+        return "Firebase auth configuration not found. Check your Firebase project settings, Email/Password auth enablement, and authorized origin.";
+    }
+
+    return message;
 }
 
 function setAuthSectionExpanded(expanded) {
     authSectionExpanded = expanded;
     authSection?.classList.toggle("collapsed", !expanded);
-    authForm?.classList.toggle("hidden", !expanded && !currentUser);
+    authForm?.classList.toggle("hidden", !expanded);
     authToggleBtn?.setAttribute("aria-expanded", String(expanded));
 }
 
@@ -167,108 +215,64 @@ function toggleAuthSection() {
 }
 
 async function migrateOwnedPoemsToLove() {
-    if (!currentUser || migratedUserId === currentUser.uid || allPoems.length === 0) {
+    // Guard: only run once per user session
+    if (!currentUser || migratedUserId === currentUser.uid) {
         return;
     }
 
-    const poemsToUpdate = allPoems.filter((poem) => poem.userId === currentUser.uid && poem.category !== "love");
+    // Only attempt migration if we have poems loaded
+    if (allPoems.length === 0) {
+        migratedUserId = currentUser.uid; // Mark as attempted
+        return;
+    }
+
+    // Find user's poems that need category migration
+    const poemsToUpdate = allPoems.filter(
+        (poem) =>
+            poem.userId === currentUser.uid &&
+            (!poem.category || poem.category !== "love")
+    );
+
+    // Mark as attempted to avoid retry loop
     migratedUserId = currentUser.uid;
 
     if (poemsToUpdate.length === 0) {
+        console.log("No poems need Love & Romance category migration.");
         return;
     }
 
+    console.log(`Migrating ${poemsToUpdate.length} poem(s) to Love & Romance...`);
+
     try {
-        await Promise.all(
-            poemsToUpdate.map((poem) =>
-                updateDoc(doc(db, "poems", poem.id), {
-                    category: "love",
-                    updatedAt: serverTimestamp()
-                })
-            )
+        const updatePromises = poemsToUpdate.map((poem) =>
+            updateDoc(doc(db, "poems", poem.id), {
+                category: "love",
+                updatedAt: serverTimestamp()
+            }).catch((err) => {
+                console.error(`Failed to migrate poem ${poem.id}:`, err);
+                throw err;
+            })
         );
-        showToast(`Moved ${poemsToUpdate.length} poem${poemsToUpdate.length === 1 ? "" : "s"} to Love & Romance.`, "success");
+
+        await Promise.all(updatePromises);
+
+        const count = poemsToUpdate.length;
+        const message = `Moved ${count} poem${count === 1 ? "" : "s"} to Love & Romance.`;
+        console.log("Migration complete:", message);
+        showToast(message, "success");
     } catch (error) {
-        migratedUserId = null;
         console.error("Poem migration failed:", error);
-        showToast("Could not update existing poem categories.", "error");
+
+        // Provide specific error feedback
+        let errorMsg = "Could not update existing poem categories.";
+        if (error.code === "permission-denied") {
+            errorMsg = "Permission denied. Make sure Firestore rules allow poem updates.";
+        } else if (error.code === "unavailable") {
+            errorMsg = "Firestore temporarily unavailable. Try again later.";
+        }
+
+        showToast(errorMsg, "error");
     }
-}
-
-function findLegacyPoemsForEmail() {
-    const email = currentUser?.email || "";
-    return allPoems.filter(
-        (poem) =>
-            !poem.userId &&
-            poem.userEmail &&
-            normalizeText(poem.userEmail) === normalizeText(email)
-    );
-}
-
-function findLegacyPoemsForAuthor(authorName) {
-    const normalizedAuthor = normalizeText(authorName);
-    return allPoems.filter(
-        (poem) => !poem.userId && normalizeText(poem.author) === normalizedAuthor
-    );
-}
-
-async function claimPoemsByEmail() {
-    if (!currentUser?.email || claiming) {
-        return;
-    }
-
-    const poemsToClaim = findLegacyPoemsForEmail();
-    if (poemsToClaim.length === 0) {
-        setClaimStatus("No older poems matched your signed-in email.");
-        return;
-    }
-
-    try {
-        claiming = true;
-        claimByEmailBtn.disabled = true;
-        claimByEmailBtn.textContent = "Claiming...";
-
-        await Promise.all(
-            poemsToClaim.map((poem) =>
-                updateDoc(doc(db, "poems", poem.id), {
-                    userId: currentUser.uid,
-                    userEmail: currentUser.email || "",
-                    category: "love",
-                    updatedAt: serverTimestamp()
-                })
-            )
-        );
-
-        setClaimStatus(`Claimed ${poemsToClaim.length} older poem${poemsToClaim.length === 1 ? "" : "s"} by email.`, "success");
-        showToast("Older poems claimed to your account.", "success");
-        migratedUserId = null;
-    } catch (error) {
-        console.error("Claim by email failed:", error);
-        setClaimStatus("Email claim failed. Make sure the new Firestore rules are deployed.", "error");
-        showToast("Could not claim older poems by email.", "error");
-    } finally {
-        claiming = false;
-        claimByEmailBtn.disabled = false;
-        claimByEmailBtn.textContent = "Claim by email";
-    }
-}
-
-function previewAuthorMatches() {
-    const authorName = claimAuthorInput?.value || "";
-    if (!authorName.trim()) {
-        setClaimStatus("Enter the exact author name used on the older poems.");
-        return;
-    }
-
-    const matches = findLegacyPoemsForAuthor(authorName);
-    if (matches.length === 0) {
-        setClaimStatus("No unclaimed poems matched that author name.");
-        return;
-    }
-
-    setClaimStatus(
-        `${matches.length} unclaimed poem${matches.length === 1 ? "" : "s"} matched that author name. These still need a manual admin claim because author text alone is not secure proof of ownership.`
-    );
 }
 
 function updateAuthDisplay(user) {
@@ -279,31 +283,16 @@ function updateAuthDisplay(user) {
         ? `Signed in as ${user.email || "your account"}`
         : "Sign in to add your poem. Your creations stay linked to your account.";
 
-    authForm?.classList.toggle("hidden", signedIn || !authSectionExpanded);
+    // Hide entire auth section when signed in
+    authSection?.classList.toggle("hidden", signedIn);
+
     signOutBtn.classList.toggle("hidden", !signedIn);
-    claimTools?.classList.toggle("hidden", !signedIn);
     poemForm.classList.toggle("disabled", !signedIn);
     submitBtn.disabled = !signedIn || saving;
     authorInput.disabled = !signedIn;
     titleInput.disabled = !signedIn;
     contentInput.disabled = !signedIn;
     statusText.textContent = signedIn ? "Ready to write." : "Sign in to add your poem.";
-
-    if (signedIn && !authorInput.value.trim()) {
-        authorInput.value = user.email?.split("@")[0] || "";
-    }
-
-    setClaimStatus(
-        signedIn
-            ? "Signed in. You can claim older poems that already use this email."
-            : ""
-    );
-
-    if (signedIn) {
-        setAuthSectionExpanded(false);
-    } else {
-        authToggleBtn?.setAttribute("aria-expanded", String(authSectionExpanded));
-    }
 
     renderPoems();
     migrateOwnedPoemsToLove();
@@ -324,14 +313,7 @@ async function handleSignIn() {
         showToast("Signed in successfully.", "success");
     } catch (error) {
         console.error("Sign in failed:", error);
-        let message = "Could not sign in.";
-        if (error.code === "auth/user-not-found") {
-            message = "No account found with this email.";
-        } else if (error.code === "auth/wrong-password") {
-            message = "Incorrect password.";
-        } else if (error.code === "auth/invalid-email") {
-            message = "Invalid email address.";
-        }
+        const message = formatFirebaseAuthError(error);
         showToast(message, "error");
     } finally {
         loginBtn.disabled = false;
@@ -359,14 +341,7 @@ async function handleRegister() {
         showToast("Account created. You are signed in.", "success");
     } catch (error) {
         console.error("Registration failed:", error);
-        let message = "Could not create an account.";
-        if (error.code === "auth/email-already-in-use") {
-            message = "An account with this email already exists.";
-        } else if (error.code === "auth/weak-password") {
-            message = "Password is too weak.";
-        } else if (error.code === "auth/invalid-email") {
-            message = "Invalid email address.";
-        }
+        const message = formatFirebaseAuthError(error) || "Could not create an account.";
         showToast(message, "error");
     } finally {
         registerBtn.disabled = false;
@@ -837,8 +812,6 @@ searchInput.addEventListener("input", renderPoems);
 categoryFilter.addEventListener("change", renderPoems);
 audioToggleBtn.addEventListener("click", toggleLofiMode);
 authToggleBtn?.addEventListener("click", toggleAuthSection);
-claimByEmailBtn?.addEventListener("click", claimPoemsByEmail);
-findAuthorMatchesBtn?.addEventListener("click", previewAuthorMatches);
 
 loginBtn.addEventListener("click", handleSignIn);
 registerBtn.addEventListener("click", handleRegister);
@@ -862,8 +835,7 @@ poemForm.addEventListener("submit", async (e) => {
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
     const author = authorInput.value.trim() || currentUser.email?.split("@")[0] || "Anonymous";
-    const category = categoryInput.value;
-
+    const category = "love";
     if (!title || !content) {
         showToast("Complete your creation first.", "error");
         return;
@@ -908,7 +880,7 @@ onSnapshot(
                 title: data.title || "",
                 content: data.content || "",
                 author: data.author || "Anonymous",
-                category: data.category || "",
+                category: data.category || "love",
                 userId: data.userId || null,
                 userEmail: data.userEmail || "",
                 createdAt: data.createdAt || null,

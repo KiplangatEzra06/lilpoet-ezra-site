@@ -505,6 +505,12 @@ body {
     gap: 14px;
 }
 
+.auth-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .auth-actions .btn-secondary {
     flex: 1;
     transition: all 0.2s ease;
@@ -513,6 +519,39 @@ body {
 .auth-actions .btn-secondary:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.auth-toggle {
+    width: 100%;
+    border: none;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+    padding: 18px 22px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.auth-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.auth-toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.auth-section.collapsed .auth-form {
+    display: none;
+}
+
+.auth-section.collapsed .auth-toggle-icon {
+    transform: rotate(-90deg);
 }
 
 .hidden {
@@ -524,7 +563,7 @@ body {
 }
 
 .auth-card {
-    max-width: 500px;
+    max-width: 940px;
     margin: 0 auto;
 }
 
@@ -602,46 +641,15 @@ body {
     margin: 0;
 }
 
-.claim-tools {
-    display: grid;
-    gap: 0.9rem;
-    margin-top: 1rem;
-}
-
-.claim-help {
-    margin: 0;
-    color: var(--muted);
-    line-height: 1.5;
-}
-
-.claim-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
-
-.claim-field {
-    margin-top: 0.25rem;
-}
-
-.claim-status {
-    margin: 0;
-    min-height: 1.5rem;
-    color: var(--muted);
-    line-height: 1.5;
-}
-
-.claim-status.success {
-    color: #8ff0c8;
-}
-
-.claim-status.error {
-    color: #ffb0b0;
-}
-
 .field {
     display: grid;
     gap: 8px;
+}
+
+.field-note {
+    font-size: 0.92rem;
+    color: var(--muted);
+    margin-top: -6px;
 }
 
 .field span,
