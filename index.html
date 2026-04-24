@@ -6,19 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lilpoet Ezra</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 
 <body>
+    <div id="intro-screen" class="intro-screen">
+        <div class="intro-content">
+            <h1 class="intro-title">Lilpoet Ezra</h1>
+            <p class="intro-subtitle">Where words find their rhythm</p>
+            <button id="enter-btn" class="enter-btn">Step into the Verse</button>
+        </div>
+    </div>
+
+    <div id="focus-overlay" class="focus-overlay">
+        <div class="focus-content">
+            <button id="close-focus" class="close-focus-btn">×</button>
+            <div id="focus-poem" class="focus-poem"></div>
+        </div>
+    </div>
+
     <div class="bg-glow bg-glow-1"></div>
     <div class="bg-glow bg-glow-2"></div>
 
     <main class="shell">
         <section class="hero card">
             <div class="hero-copy">
-                <p class="eyebrow">Poetry studio</p>
+                <p class="intro-quote">"In the silence between thoughts, poetry is born."</p>
+                <p class="eyebrow">Poetry Hub</p>
                 <h1>Lilpoet Ezra</h1>
                 <p class="subtitle">
-                    A clean space to write, save, and read your poems with realtime updates.
+                    A refined studio for composing, curating, and presenting poems with graceful flow and vivid clarity.
                 </p>
             </div>
 
@@ -39,52 +60,131 @@
             </div>
         </section>
 
+        <section id="authSection" class="auth-section collapsed">
+            <div class="card auth-card">
+                <div class="auth-content">
+                    <button id="authToggleBtn" class="auth-toggle" type="button" aria-expanded="false" aria-controls="authForm">
+                        <span class="auth-toggle-copy">
+                            <span class="auth-toggle-title">Sign in to add your poem</span>
+                            <span class="auth-toggle-subtitle">Browse all uploaded poems anytime. Open this section when you are ready to share your own voice.</span>
+                        </span>
+                        <span class="auth-toggle-icon" aria-hidden="true"></span>
+                    </button>
+                    <div id="authForm" class="auth-form hidden">
+                        <label class="field">
+                            <span>Email</span>
+                            <input id="emailInput" type="email" placeholder="you@example.com" autocomplete="username" />
+                        </label>
+                        <label class="field">
+                            <span>Password</span>
+                            <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
+                        </label>
+                        <div class="auth-actions">
+                            <button id="loginBtn" type="button" class="btn-secondary">Sign in</button>
+                            <button id="registerBtn" type="button" class="btn-secondary">Create account</button>
+                        </div>
+                    </div>
+                    <div class="auth-status compact">
+                        <p id="authState" class="auth-state">You can view poems below without signing in.</p>
+                        <div id="claimTools" class="claim-tools hidden">
+                            <p class="claim-help">Claim older poems that were uploaded before ownership was attached.</p>
+                            <div class="claim-actions">
+                                <button id="claimByEmailBtn" type="button" class="btn-secondary">Claim by email</button>
+                            </div>
+                            <label class="field claim-field">
+                                <span>Or check poems by author name</span>
+                                <input id="claimAuthorInput" type="text" placeholder="Exact author name on old poems" maxlength="60" autocomplete="off" />
+                            </label>
+                            <button id="findAuthorMatchesBtn" type="button" class="btn-secondary">Find author matches</button>
+                            <p id="claimStatus" class="claim-status"></p>
+                        </div>
+                        <button id="signOutBtn" type="button" class="btn-secondary hidden">Sign out</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="layout">
             <article class="card composer">
                 <div class="section-head">
-                    <h2>New poem</h2>
-                    <span class="pill">Firestore live</span>
+                    <h2>Craft New Poem</h2>
                 </div>
 
                 <form id="poemForm" class="form">
                     <label class="field">
                         <span>Author</span>
-                        <input id="authorInput" type="text" placeholder="Your name" maxlength="60"
-                            autocomplete="off" />
+                        <input id="authorInput" type="text" placeholder="Your name" maxlength="60" autocomplete="off" />
                     </label>
 
                     <label class="field">
                         <span>Title</span>
-                        <input id="titleInput" type="text" placeholder="Enter poem title" maxlength="80"
+                        <input id="titleInput" type="text" placeholder="Give your poem a title" maxlength="80"
                             autocomplete="off" />
                     </label>
 
                     <label class="field">
+                        <span>Category (optional)</span>
+                        <select id="categoryInput">
+                            <option value="">Select a category...</option>
+                            <option value="love">Love & Romance</option>
+                            <option value="nature">Nature & Environment</option>
+                            <option value="life">Life & Reflection</option>
+                            <option value="social">Social & Political</option>
+                            <option value="spiritual">Spiritual & Faith</option>
+                            <option value="personal">Personal Growth</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </label>
+
+                    <label class="field">
                         <span>Poem</span>
-                        <textarea id="contentInput" placeholder="Write your poem here..." rows="10"
+                        <textarea id="contentInput" placeholder="Pour your soul into words..." rows="10"
                             maxlength="5000"></textarea>
                     </label>
 
                     <div class="form-footer">
-                        <p id="statusText" class="status">Ready to write.</p>
-                        <button id="submitBtn" type="submit" class="btn-primary">Save poem</button>
+                        <p id="statusText" class="status">Ready to create.</p>
+                        <button id="submitBtn" type="submit" class="btn-primary">Share Poem</button>
                     </div>
                 </form>
             </article>
 
             <article class="card feed">
                 <div class="section-head">
-                    <h2>Poem feed</h2>
-                    <label class="search">
-                        <span>Search</span>
-                        <input id="searchInput" type="text" placeholder="Search titles or text..." autocomplete="off" />
-                    </label>
+                    <h2>Poem Gallery</h2>
+                    <div class="filters">
+                        <label class="search">
+                            <span>Search</span>
+                            <input id="searchInput" type="text" placeholder="Search titles or text..." autocomplete="off" />
+                        </label>
+                        <label class="filter">
+                            <span>Category</span>
+                            <select id="categoryFilter">
+                                <option value="">All categories</option>
+                                <option value="love">Love & Romance</option>
+                                <option value="nature">Nature & Environment</option>
+                                <option value="life">Life & Reflection</option>
+                                <option value="social">Social & Political</option>
+                                <option value="spiritual">Spiritual & Faith</option>
+                                <option value="personal">Personal Growth</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </label>
+                    </div>
                 </div>
 
                 <div id="poemsContainer" class="poems"></div>
+                <div id="loadingIndicator" class="loading-indicator">
+                    <div class="loading-spinner"></div>
+                    <p>Loading poems...</p>
+                </div>
             </article>
         </section>
     </main>
+
+    <footer class="site-footer">
+        <p>© 2026 Lilpoet Ezra • Crafted with rhythm and soul</p>
+    </footer>
 
     <div id="toast" class="toast" aria-live="polite"></div>
 
