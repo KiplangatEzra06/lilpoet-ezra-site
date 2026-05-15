@@ -4,27 +4,77 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lilpoet Ezra</title>
+    <title>Lilpoet Ezra | Cinematic Poetry Anthology</title>
+    <meta name="description"
+        content="Read Lilpoet Ezra, a restrained cinematic poetry archive shaped by Nairobi nights, memory, solitude, quiet survival, and becoming.">
+    <meta name="author" content="Lilpoet Ezra">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://kiplangatezra06.github.io/lilpoet-ezra-site/">
+    <meta property="og:title" content="Lilpoet Ezra | Cinematic Poetry Anthology">
+    <meta property="og:description"
+        content="A night-lit poetry archive of longing, memory, quiet survival, and the slow work of becoming.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kiplangatezra06.github.io/lilpoet-ezra-site/">
+    <meta property="og:site_name" content="Lilpoet Ezra">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="https://kiplangatezra06.github.io/lilpoet-ezra-site/images/hero-share.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Lilpoet Ezra cinematic poetry anthology share card">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lilpoet Ezra | Cinematic Poetry Anthology">
+    <meta name="twitter:description"
+        content="Poems shaped by Nairobi nights, memory, solitude, and restrained hope.">
+    <meta name="twitter:image" content="https://kiplangatezra06.github.io/lilpoet-ezra-site/images/hero-share.png">
+    <meta name="twitter:image:alt" content="Lilpoet Ezra cinematic poetry anthology share card">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="sitemap" type="application/xml" href="sitemap.xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
 </head>
 
 <body>
     <div id="intro-screen" class="intro-screen">
         <div class="intro-content">
             <h1 class="intro-title">Lilpoet Ezra</h1>
-            <p class="intro-subtitle">Where words find their rhythm</p>
-            <button id="enter-btn" class="enter-btn">Step into the Verse</button>
+            <p class="intro-subtitle">Night keeps its witnesses.</p>
+            <button id="enter-btn" class="enter-btn">Enter quietly</button>
         </div>
     </div>
 
-    <div id="focus-overlay" class="focus-overlay">
+    <header class="topbar">
+        <div class="topbar-brand">
+            <span class="brand-mark">L</span>
+            <div>
+                <span class="brand-name">Lilpoet Ezra</span>
+                <small class="brand-tag">Nairobi night archive</small>
+            </div>
+        </div>
+        <button id="menuToggleBtn" class="mobile-menu-btn" aria-expanded="false" aria-label="Open navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="nav-links" id="mobileNav" aria-label="Primary navigation">
+            <a href="#hero">Home</a>
+            <a href="#featured">Night Works</a>
+            <a href="#poemsContainer">Archive</a>
+            <a href="#authSection">Return</a>
+        </nav>
+        <div class="session-bar">
+            <p id="sessionHint" class="session-hint">Read in silence. Sign in when you want to leave a trace.</p>
+            <button id="themeToggleBtn" type="button" class="btn-secondary">Lift the light</button>
+            <button id="signOutBtn" type="button" class="btn-secondary hidden">Step away</button>
+        </div>
+    </header>
+
+    <div id="focus-overlay" class="focus-overlay" role="dialog" aria-modal="true" aria-label="Opened night piece">
         <div class="focus-content">
-            <button id="close-focus" class="close-focus-btn">×</button>
+            <button id="close-focus" class="close-focus-btn" type="button" aria-label="Close night piece">&times;</button>
             <div id="focus-poem" class="focus-poem"></div>
         </div>
     </div>
@@ -33,30 +83,99 @@
     <div class="bg-glow bg-glow-2"></div>
 
     <main class="shell">
-        <section class="hero card">
-            <div class="hero-copy">
-                <p class="intro-quote">"In the silence between thoughts, poetry is born."</p>
-                <p class="eyebrow">Poetry Hub</p>
-                <h1>Lilpoet Ezra</h1>
-                <p class="subtitle">
-                    A refined studio for composing, curating, and presenting poems with graceful flow and vivid clarity.
-                </p>
+        <section id="hero" class="hero">
+            <div class="hero-backdrop" aria-hidden="true">
+                <div class="hero-layers"></div>
+                <div class="hero-particles">
+                    <span style="--i:0"></span>
+                    <span style="--i:1"></span>
+                    <span style="--i:2"></span>
+                    <span style="--i:3"></span>
+                    <span style="--i:4"></span>
+                    <span style="--i:5"></span>
+                    <span style="--i:6"></span>
+                    <span style="--i:7"></span>
+                    <span style="--i:8"></span>
+                    <span style="--i:9"></span>
+                </div>
+                <div class="hero-grain"></div>
             </div>
-
-            <div class="hero-meta">
-                <div class="stats">
-                    <div class="stat">
+            <div class="hero-copy fade-reveal" style="animation-delay: 0.18s;">
+                <p class="eyebrow">Nairobi After Dark</p>
+                <h1 class="hero-title">Poems for the hour after the city exhales.</h1>
+                <p class="hero-description">A restrained archive of longing, survival, memory, and becoming. These are
+                    quiet pieces for rooftops, empty roads, blue light, and the small courage of staying alive.</p>
+                <div class="hero-cta">
+                    <a href="#featured" class="btn-primary">Begin at night</a>
+                    <a href="#poemsContainer" class="btn-secondary">Open the archive</a>
+                </div>
+                <p class="hero-footnote">Sign in to save what follows you, or to leave one honest line behind.</p>
+            </div>
+            <aside class="hero-panel fade-reveal" style="animation-delay: 0.38s;">
+                <div class="hero-panel-copy">
+                    <p class="panel-eyebrow">Low light sequence</p>
+                    <h2>Utaona Dust, When the Candle Tilted, Midnight on a Nairobi Rooftop, The Weight of Hope</h2>
+                    <p class="panel-note">Each poem moves slowly: a window, a road, a room, a memory refusing to leave.</p>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat stat-large">
                         <span id="poemCount">0</span>
-                        <small>Poems</small>
+                        <small>Night pieces</small>
                     </div>
-                    <div class="stat">
+                    <div class="stat stat-large">
                         <span id="charCount">0</span>
-                        <small>Chars typed</small>
+                        <small>Letters held</small>
                     </div>
                 </div>
-                <button id="audioToggleBtn" type="button" class="btn-secondary" aria-pressed="false">
-                    Play lofi mode
-                </button>
+                <div class="ambient-controls" aria-label="Ambient audio controls">
+                    <div class="ambient-controls-head">
+                        <p class="panel-eyebrow">Room tone</p>
+                        <button id="audioToggleBtn" type="button" class="btn-secondary" aria-pressed="false">Play</button>
+                    </div>
+                    <label class="ambient-slider">
+                        <span>Rain on mabati</span>
+                        <input id="rainVolume" type="range" min="0" max="100" value="35">
+                    </label>
+                    <label class="ambient-slider">
+                        <span>Soft keys</span>
+                        <input id="pianoVolume" type="range" min="0" max="100" value="28">
+                    </label>
+                    <label class="ambient-slider">
+                        <span>Vinyl dust</span>
+                        <input id="vinylVolume" type="range" min="0" max="100" value="18">
+                    </label>
+                </div>
+            </aside>
+        </section>
+
+        <section id="featured" class="featured">
+            <div class="section-head featured-head">
+                <div>
+                    <p class="eyebrow">Night Works</p>
+                    <h2>Four pieces for memory, distance, and what remains.</h2>
+                </div>
+            </div>
+            <div class="featured-grid">
+                <article class="featured-card fade-reveal">
+                    <span class="featured-tag">Dust</span>
+                    <h3>Utaona Dust</h3>
+                    <p>A dusk-lit piece about distance, pride, and the road that keeps its own counsel.</p>
+                </article>
+                <article class="featured-card fade-reveal">
+                    <span class="featured-tag">Flame</span>
+                    <h3>When the Candle Tilted</h3>
+                    <p>A small room, a small flame, and the fear of watching warmth lean away.</p>
+                </article>
+                <article class="featured-card fade-reveal">
+                    <span class="featured-tag">Rooftop</span>
+                    <h3>Midnight on a Nairobi Rooftop</h3>
+                    <p>Skyline solitude, borrowed courage, and the ache of what cannot be returned.</p>
+                </article>
+                <article class="featured-card fade-reveal">
+                    <span class="featured-tag">Weight</span>
+                    <h3>The Weight of Hope</h3>
+                    <p>A quiet account of longing after the answer never arrives.</p>
+                </article>
             </div>
         </section>
 
@@ -66,92 +185,98 @@
                     <button id="authToggleBtn" class="auth-toggle" type="button" aria-expanded="false"
                         aria-controls="authForm">
                         <span class="auth-toggle-copy">
-                            <span class="auth-toggle-title">Sign in to add your poem</span>
-                            <span class="auth-toggle-subtitle">Coming soon: Sign in to contribute your own poems to the
-                                collection. For now, enjoy reading the existing poems.</span>
+                            <span class="auth-toggle-title">Sign in to leave a trace</span>
+                            <span class="auth-toggle-subtitle">Keep the poems that follow you, mark your place, and add
+                                a response without breaking the silence.</span>
                         </span>
                         <span class="auth-toggle-icon" aria-hidden="true"></span>
                     </button>
                     <div id="authForm" class="auth-form hidden">
                         <label class="field">
                             <span>Email</span>
-                            <input id="emailInput" type="email" placeholder="you@example.com" autocomplete="username" />
+                            <input id="emailInput" type="email" placeholder="name@nightmail.com" autocomplete="username" />
                         </label>
                         <label class="field">
-                            <span>Password</span>
-                            <input id="passwordInput" type="password" placeholder="Password"
+                            <span>Passphrase</span>
+                            <input id="passwordInput" type="password" placeholder="Keep it private"
                                 autocomplete="current-password" />
                         </label>
                         <div class="auth-actions">
-                            <button id="loginBtn" type="button" class="btn-secondary">Sign in</button>
-                            <button id="registerBtn" type="button" class="btn-secondary">Create account</button>
+                            <button id="loginBtn" type="button" class="btn-secondary">Return</button>
+                            <button id="registerBtn" type="button" class="btn-secondary">Begin</button>
                         </div>
                     </div>
                     <div class="auth-status compact">
-                        <p id="authState" class="auth-state">You can view poems below without signing in.</p>
-                        <button id="signOutBtn" type="button" class="btn-secondary hidden">Sign out</button>
+                        <p id="authState" class="auth-state">The archive is open. Sign in only if you want it to remember you.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="layout">
+        <section class="layout" aria-labelledby="composerHeading">
             <article class="card composer">
                 <div class="section-head">
-                    <h2>Craft New Poem</h2>
+                    <h2 id="composerHeading">Leave a Night Piece</h2>
                 </div>
 
                 <form id="poemForm" class="form">
                     <label class="field">
-                        <span>Author</span>
-                        <input id="authorInput" type="text" placeholder="Your name" maxlength="60" autocomplete="off" />
+                        <span>Name</span>
+                        <input id="authorInput" type="text" placeholder="How the night should know you" maxlength="60" autocomplete="off" />
                     </label>
 
                     <label class="field">
                         <span>Title</span>
-                        <input id="titleInput" type="text" placeholder="Give your poem a title" maxlength="80"
+                        <input id="titleInput" type="text" placeholder="Name the ache plainly" maxlength="80"
                             autocomplete="off" />
                     </label>
 
                     <label class="field">
                         <span>Category</span>
-                        <input id="categoryInput" type="hidden" value="love" />
-                        <div class="field-note">All new poems are published to Love & Romance.</div>
+                        <select id="categoryInput">
+                            <option value="love">Love & Longing</option>
+                            <option value="nature">Earth & Weather</option>
+                            <option value="life">Life & Becoming</option>
+                            <option value="social">City & Witness</option>
+                            <option value="spiritual">Spirit & Silence</option>
+                            <option value="personal">Self & Survival</option>
+                            <option value="other">Elsewhere</option>
+                        </select>
                     </label>
 
                     <label class="field">
-                        <span>Poem</span>
-                        <textarea id="contentInput" placeholder="Pour your soul into words..." rows="10"
+                        <span>Text</span>
+                        <textarea id="contentInput" placeholder="Write what survived the night." rows="10"
                             maxlength="5000"></textarea>
                     </label>
 
                     <div class="form-footer">
-                        <p id="statusText" class="status">Ready to create.</p>
-                        <button id="submitBtn" type="submit" class="btn-primary">Share Poem</button>
+                        <p id="statusText" class="status">Waiting for a line.</p>
+                        <button id="submitBtn" type="submit" class="btn-primary">Place in archive</button>
                     </div>
                 </form>
             </article>
 
-            <article class="card feed">
+            <article class="card feed" aria-labelledby="galleryHeading">
                 <div class="section-head">
-                    <h2>Poem Gallery</h2>
+                    <h2 id="galleryHeading">The Archive</h2>
                     <div class="filters">
                         <label class="search">
                             <span>Search</span>
-                            <input id="searchInput" type="text" placeholder="Search titles or text..."
+                            <input id="searchInput" type="text" placeholder="Search by memory, title, or line..."
                                 autocomplete="off" />
                         </label>
                         <label class="filter">
                             <span>Category</span>
                             <select id="categoryFilter">
-                                <option value="">All categories</option>
-                                <option value="love">Love & Romance</option>
-                                <option value="nature">Nature & Environment</option>
-                                <option value="life">Life & Reflection</option>
-                                <option value="social">Social & Political</option>
-                                <option value="spiritual">Spiritual & Faith</option>
-                                <option value="personal">Personal Growth</option>
-                                <option value="other">Other</option>
+                                <option value="">All rooms</option>
+                                <option value="love">Love & Longing</option>
+                                <option value="nature">Earth & Weather</option>
+                                <option value="life">Life & Becoming</option>
+                                <option value="social">City & Witness</option>
+                                <option value="spiritual">Spirit & Silence</option>
+                                <option value="personal">Self & Survival</option>
+                                <option value="other">Elsewhere</option>
                             </select>
                         </label>
                     </div>
@@ -160,14 +285,14 @@
                 <div id="poemsContainer" class="poems"></div>
                 <div id="loadingIndicator" class="loading-indicator">
                     <div class="loading-spinner"></div>
-                    <p>Loading poems...</p>
+                    <p>Gathering the night pieces...</p>
                 </div>
             </article>
         </section>
     </main>
 
     <footer class="site-footer">
-        <p>© 2026 Lilpoet Ezra • Crafted with rhythm and soul</p>
+        <p>&copy; 2026 Lilpoet Ezra &bull; Written between the city lights and the quiet after</p>
     </footer>
 
     <div id="toast" class="toast" aria-live="polite"></div>
