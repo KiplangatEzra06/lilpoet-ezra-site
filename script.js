@@ -54,12 +54,6 @@ const toast = document.getElementById("toast");
 const submitBtn = document.getElementById("submitBtn");
 const statusText = document.getElementById("statusText");
 const searchInput = document.getElementById("searchInput");
-const poemCount = document.getElementById("poemCount");
-const charCount = document.getElementById("charCount");
-const audioToggleBtn = document.getElementById("audioToggleBtn");
-const rainVolume = document.getElementById("rainVolume");
-const pianoVolume = document.getElementById("pianoVolume");
-const vinylVolume = document.getElementById("vinylVolume");
 const categoryFilter = document.getElementById("categoryFilter");
 const authState = document.getElementById("authState");
 const emailInput = document.getElementById("emailInput");
@@ -71,6 +65,7 @@ const authForm = document.getElementById("authForm");
 const authSection = document.getElementById("authSection");
 const authToggleBtn = document.getElementById("authToggleBtn");
 const themeToggleBtn = document.getElementById("themeToggleBtn");
+const authNavLink = document.getElementById("authNavLink");
 const sessionHint = document.getElementById("sessionHint");
 const menuToggleBtn = document.getElementById("menuToggleBtn");
 const mobileNav = document.getElementById("mobileNav");
@@ -111,7 +106,7 @@ enterBtn?.addEventListener("click", () => {
 function openFocusMode(poem) {
     focusPoem.innerHTML = `
         <h2>${escapeHtml(poem.title || "Untitled Piece")}</h2>
-        <div class="focus-author">held by ${escapeHtml(poem.author)}</div>
+        <div class="focus-author">by ${escapeHtml(poem.author)}</div>
         <div class="focus-text">${escapeHtml(poem.content || "")}</div>
     `;
     focusOverlay.classList.add("active");
@@ -151,10 +146,6 @@ document.addEventListener("keydown", (e) => {
 let allPoems = [];
 let hideToastTimer = null;
 let saving = false;
-let audioContext = null;
-let audioNodes = null;
-let audioActive = false;
-let audioBufferCache = null;
 let currentUser = null;
 let initialLoad = true;
 let authSectionExpanded = false;
@@ -283,43 +274,13 @@ function subscribeInteractionData(user) {
         renderPoems();
     }, (error) => {
         console.error("Reading progress listener failed:", error);
-        showToast("Your place in the archive could not be restored.", "error");
+        showToast("Your place could not be found.", "error");
     });
 }
 
 function formatReadTime(content) {
     const words = String(content || "").trim().split(/\s+/).filter(Boolean).length;
-    return `${Math.max(1, Math.ceil(words / 180))} min read`;
-}
-
-function createFavoriteButton(poem) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "poem-favorite-btn";
-    const updateState = () => {
-        const isActive = favoritePoemIds.has(poem.id);
-        button.classList.toggle("active", isActive);
-        button.textContent = isActive ? "Kept" : "Keep";
-    };
-
-    button.addEventListener("click", (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (favoritePoemIds.has(poem.id)) {
-            favoritePoemIds.delete(poem.id);
-        } else {
-            favoritePoemIds.add(poem.id);
-        }
-        updateState();
-        saveFavoritePoems();
-        if (!button.classList.contains("pulse")) {
-            button.classList.add("pulse");
-            window.setTimeout(() => button.classList.remove("pulse"), 340);
-        }
-    });
-
-    updateState();
-    return button;
+    return `${Math.max(1, Math.ceil(words / 180))} quiet min`;
 }
 
 function getMetaChip(label) {
@@ -334,69 +295,6 @@ function getPlainChip(label) {
     chip.className = "poem-meta-chip";
     chip.textContent = label;
     return chip;
-}
-
-function createFirebaseFavoriteButton(poem) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "poem-favorite-btn";
-
-    const updateState = () => {
-        const isActive = favoritePoemIds.has(poem.id);
-        const count = favoriteCountsByPoem.get(poem.id) || 0;
-        button.classList.toggle("active", isActive);
-        button.textContent = `${isActive ? "Kept" : "Keep"} ${count || ""}`.trim();
-        button.title = isActive ? "Let this piece go" : "Keep this piece";
-    };
-
-    button.addEventListener("click", async (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (!currentUser) {
-            showToast("Sign in to keep this piece beyond tonight.", "error");
-            return;
-        }
-
-        const wasFavorite = favoritePoemIds.has(poem.id);
-        if (wasFavorite) {
-            favoritePoemIds.delete(poem.id);
-        } else {
-            favoritePoemIds.add(poem.id);
-        }
-        updateState();
-        saveFavoritePoems();
-
-        try {
-            const favoriteRef = doc(db, "favorites", interactionDocId(currentUser.uid, poem.id));
-            if (wasFavorite) {
-                await deleteDoc(favoriteRef);
-            } else {
-                await setDoc(favoriteRef, {
-                    poemId: poem.id,
-                    userId: currentUser.uid,
-                    userEmail: currentUser.email || "",
-                    createdAt: serverTimestamp()
-                });
-            }
-        } catch (error) {
-            console.error("Favorite update failed:", error);
-            if (wasFavorite) {
-                favoritePoemIds.add(poem.id);
-            } else {
-                favoritePoemIds.delete(poem.id);
-            }
-            updateState();
-            saveFavoritePoems();
-            showToast("This piece could not be kept just now.", "error");
-        }
-
-        button.classList.add("pulse");
-        window.setTimeout(() => button.classList.remove("pulse"), 340);
-    });
-
-    updateState();
-    return button;
 }
 
 function getCategoryLabel(category) {
@@ -486,13 +384,13 @@ function createProgressPanel(poem) {
 
 async function addComment(poemId, textarea) {
     if (!currentUser) {
-        showToast("Sign in before leaving a response.", "error");
+        showToast("Return before leaving a reply.", "error");
         return;
     }
 
     const text = textarea.value.trim();
     if (!text) {
-        showToast("Leave at least one honest line.", "error");
+        showToast("Leave one line first.", "error");
         return;
     }
 
@@ -507,7 +405,7 @@ async function addComment(poemId, textarea) {
             createdAt: serverTimestamp()
         });
         textarea.value = "";
-        showToast("Your response has been left quietly.", "success");
+        showToast("Left here.", "success");
     } catch (error) {
         console.error("Comment add failed:", error);
         showToast("The response could not be placed.", "error");
@@ -531,7 +429,7 @@ function createCommentsSection(poem) {
     const comments = commentsByPoem.get(poem.id) || [];
     const section = document.createElement("section");
     section.className = "comments-section";
-    section.setAttribute("aria-label", `Responses for ${poem.title || "poem"}`);
+    section.setAttribute("aria-label", `Responses for ${poem.title || "piece"}`);
 
     const title = document.createElement("h4");
     title.textContent = `Responses (${comments.length})`;
@@ -543,7 +441,7 @@ function createCommentsSection(poem) {
     if (comments.length === 0) {
         const empty = document.createElement("p");
         empty.className = "comment-empty";
-        empty.textContent = "No one has answered this piece yet.";
+        empty.textContent = "Still waiting.";
         list.appendChild(empty);
     } else {
         comments.forEach((comment) => {
@@ -577,9 +475,9 @@ function createCommentsSection(poem) {
     form.innerHTML = `
         <label>
             <span>Leave a response</span>
-            <textarea rows="3" maxlength="600" placeholder="${currentUser ? "A quiet line is enough." : "Sign in to respond"}"></textarea>
+            <textarea rows="3" maxlength="600" placeholder="${currentUser ? "A line is enough." : "Return to reply"}"></textarea>
         </label>
-        <button type="submit" class="poem-action-btn" ${currentUser ? "" : "disabled"}>Leave it here</button>
+        <button type="submit" class="poem-action-btn" ${currentUser ? "" : "disabled"}>Add</button>
     `;
 
     const textarea = form.querySelector("textarea");
@@ -649,13 +547,8 @@ function applyTheme(theme) {
     document.documentElement.dataset.theme = chosen;
     localStorage.setItem("lilpoet-theme", chosen);
     if (themeToggleBtn) {
-        themeToggleBtn.textContent = chosen === "light" ? "Return to night" : "Lift the light";
+        themeToggleBtn.textContent = "Sign In";
     }
-}
-
-function toggleTheme() {
-    const current = document.documentElement.dataset.theme || "dark";
-    applyTheme(current === "dark" ? "light" : "dark");
 }
 
 function setAuthSectionExpanded(expanded) {
@@ -663,6 +556,17 @@ function setAuthSectionExpanded(expanded) {
     authSection?.classList.toggle("collapsed", !expanded);
     authForm?.classList.toggle("hidden", !expanded);
     authToggleBtn?.setAttribute("aria-expanded", String(expanded));
+}
+
+function scrollToSection(id) {
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function openSignIn() {
+    setAuthSectionExpanded(true);
+    scrollToSection("authSection");
 }
 
 function toggleAuthSection() {
@@ -712,7 +616,7 @@ async function migrateOwnedPoemsToLove() {
         await Promise.all(updatePromises);
 
         const count = poemsToUpdate.length;
-        const message = `Re-shelved ${count} piece${count === 1 ? "" : "s"} under Love & Longing.`;
+        const message = `Moved ${count} piece${count === 1 ? "" : "s"} to Love & Longing.`;
         console.log("Migration complete:", message);
         showToast(message, "success");
     } catch (error) {
@@ -723,7 +627,7 @@ async function migrateOwnedPoemsToLove() {
         if (error.code === "permission-denied") {
             errorMsg = "Permission was denied. Check the Firestore rules.";
         } else if (error.code === "unavailable") {
-            errorMsg = "The archive is briefly unreachable.";
+            errorMsg = "The poems are out of reach for now.";
         }
 
         showToast(errorMsg, "error");
@@ -737,23 +641,29 @@ function updateAuthDisplay(user) {
 
     authState.textContent = signedIn
         ? `You returned as ${user.email || "your account"}.`
-        : "You can read without being remembered. Sign in to keep your place.";
+        : "Open to anyone who writes quietly.";
 
     // Hide entire auth section when signed in
     authSection?.classList.toggle("hidden", signedIn);
 
     signOutBtn.classList.toggle("hidden", !signedIn);
+    themeToggleBtn.classList.toggle("hidden", signedIn);
+    themeToggleBtn.textContent = "Sign In";
+    if (authNavLink) {
+        authNavLink.textContent = "Return";
+        authNavLink.setAttribute("href", signedIn ? "#hero" : "#authSection");
+    }
     poemForm.classList.toggle("disabled", !signedIn);
     submitBtn.disabled = !signedIn || saving;
     authorInput.disabled = !signedIn;
     titleInput.disabled = !signedIn;
     categoryInput.disabled = !signedIn;
     contentInput.disabled = !signedIn;
-    statusText.textContent = signedIn ? "Waiting for a line." : "Sign in before leaving a piece.";
+    statusText.textContent = signedIn ? "Still waiting." : "Return before leaving a piece.";
 
     sessionHint.textContent = signedIn
         ? `${user.email?.split("@")[0] || "your account"} is back in the room. Saved pieces and progress will hold.`
-        : "Read in silence. Sign in when you want the archive to remember you.";
+        : "A room for what survives the night.";
 
     renderPoems();
     migrateOwnedPoemsToLove();
@@ -778,7 +688,7 @@ async function handleSignIn() {
         showToast(message, "error");
     } finally {
         loginBtn.disabled = false;
-        loginBtn.textContent = "Return";
+        loginBtn.textContent = "Sign In";
     }
 }
 
@@ -799,14 +709,14 @@ async function handleRegister() {
         registerBtn.disabled = true;
         registerBtn.textContent = "Making room...";
         await createUserWithEmailAndPassword(auth, email, password);
-        showToast("A quiet place has been made for you.", "success");
+        showToast("You can add your drop now.", "success");
     } catch (error) {
         console.error("Registration failed:", error);
         const message = formatFirebaseAuthError(error) || "The account could not be made.";
         showToast(message, "error");
     } finally {
         registerBtn.disabled = false;
-        registerBtn.textContent = "Begin";
+        registerBtn.textContent = "Start here";
     }
 }
 
@@ -822,16 +732,16 @@ async function handleSignOut() {
 
 async function deletePoem(poemId) {
     if (!currentUser) {
-        showToast("Sign in before removing a piece.", "error");
+        showToast("Return before removing a piece.", "error");
         return;
     }
 
     try {
         await deleteDoc(doc(db, "poems", poemId));
-        showToast("The piece has been removed from the archive.", "success");
+        showToast("The piece is gone.", "success");
     } catch (error) {
         console.error("Delete failed:", error);
-        showToast("The piece would not leave the archive.", "error");
+        showToast("The piece could not leave.", "error");
     }
 }
 
@@ -878,155 +788,12 @@ function showToast(message, type = "success") {
 function setSavingState(isSaving) {
     saving = isSaving;
     submitBtn.disabled = isSaving || !currentUser;
-    submitBtn.textContent = isSaving ? "Saving..." : "Place in archive";
+    submitBtn.textContent = isSaving ? "Holding..." : "Add";
     statusText.textContent = isSaving
-        ? "Carrying the line into the archive..."
+        ? "Adding your drop..."
         : currentUser
-            ? "Waiting for a line."
-            : "Sign in before leaving a piece.";
-}
-
-function getSliderLevel(slider, fallback) {
-    return Math.max(0, Math.min(1, Number(slider?.value ?? fallback) / 100));
-}
-
-function makeNoiseBuffer(ctx, seconds = 2) {
-    const frameCount = Math.floor(ctx.sampleRate * seconds);
-    const buffer = ctx.createBuffer(1, frameCount, ctx.sampleRate);
-    const output = buffer.getChannelData(0);
-    for (let i = 0; i < frameCount; i += 1) {
-        output[i] = Math.random() * 2 - 1;
-    }
-    return buffer;
-}
-
-function makeVinylBuffer(ctx, seconds = 4) {
-    const frameCount = Math.floor(ctx.sampleRate * seconds);
-    const buffer = ctx.createBuffer(1, frameCount, ctx.sampleRate);
-    const output = buffer.getChannelData(0);
-    for (let i = 0; i < frameCount; i += 1) {
-        const crackle = Math.random() > 0.985 ? (Math.random() * 2 - 1) * 0.9 : 0;
-        output[i] = (Math.random() * 2 - 1) * 0.04 + crackle;
-    }
-    return buffer;
-}
-
-async function loadPianoBuffer(ctx) {
-    if (audioBufferCache) return audioBufferCache;
-    const response = await fetch("audio/beat.mp3");
-    if (!response.ok) {
-        throw new Error(`Failed to load audio file: ${response.statusText}`);
-    }
-    const arrayBuffer = await response.arrayBuffer();
-    audioBufferCache = await ctx.decodeAudioData(arrayBuffer);
-    return audioBufferCache;
-}
-
-function applyAmbientVolumes() {
-    if (!audioNodes) return;
-    audioNodes.rainGain.gain.setTargetAtTime(getSliderLevel(rainVolume, 35) * 0.28, audioContext.currentTime, 0.04);
-    audioNodes.pianoGain.gain.setTargetAtTime(getSliderLevel(pianoVolume, 28) * 0.45, audioContext.currentTime, 0.04);
-    audioNodes.vinylGain.gain.setTargetAtTime(getSliderLevel(vinylVolume, 18) * 0.18, audioContext.currentTime, 0.04);
-}
-
-async function createAmbientAudio() {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const masterGain = ctx.createGain();
-    masterGain.gain.value = 0.9;
-    masterGain.connect(ctx.destination);
-
-    const rainSource = ctx.createBufferSource();
-    rainSource.buffer = makeNoiseBuffer(ctx, 2.5);
-    rainSource.loop = true;
-    const rainFilter = ctx.createBiquadFilter();
-    rainFilter.type = "bandpass";
-    rainFilter.frequency.value = 950;
-    rainFilter.Q.value = 0.7;
-    const rainGain = ctx.createGain();
-    rainGain.gain.value = 0;
-    rainSource.connect(rainFilter).connect(rainGain).connect(masterGain);
-
-    const vinylSource = ctx.createBufferSource();
-    vinylSource.buffer = makeVinylBuffer(ctx, 4);
-    vinylSource.loop = true;
-    const vinylFilter = ctx.createBiquadFilter();
-    vinylFilter.type = "highpass";
-    vinylFilter.frequency.value = 1600;
-    const vinylGain = ctx.createGain();
-    vinylGain.gain.value = 0;
-    vinylSource.connect(vinylFilter).connect(vinylGain).connect(masterGain);
-
-    const pianoSource = ctx.createBufferSource();
-    pianoSource.buffer = await loadPianoBuffer(ctx);
-    pianoSource.loop = true;
-    const pianoGain = ctx.createGain();
-    pianoGain.gain.value = 0;
-    pianoSource.connect(pianoGain).connect(masterGain);
-
-    rainSource.start();
-    vinylSource.start();
-    pianoSource.start();
-
-    return {
-        ctx,
-        sources: [rainSource, vinylSource, pianoSource],
-        rainGain,
-        pianoGain,
-        vinylGain,
-        masterGain
-    };
-}
-
-async function startAmbientMode() {
-    if (!audioContext || audioContext.state === "closed") {
-        try {
-            audioNodes = await createAmbientAudio();
-            audioContext = audioNodes.ctx;
-        } catch (error) {
-            console.error("Failed to load ambient audio:", error);
-            showToast("The room tone could not begin.", "error");
-            return;
-        }
-    }
-
-    if (audioContext.state === "suspended") {
-        await audioContext.resume();
-    }
-
-    audioActive = true;
-    applyAmbientVolumes();
-    audioToggleBtn.classList.add("active");
-    audioToggleBtn.textContent = "Quiet";
-    audioToggleBtn.setAttribute("aria-pressed", "true");
-    showToast("Room tone is now under the piece.", "success");
-}
-
-async function stopAmbientMode() {
-    if (!audioContext) return;
-
-    try {
-        audioNodes?.sources?.forEach((source) => source.stop());
-        await audioContext.close();
-    } catch (error) {
-        console.warn("Audio stop error:", error);
-    }
-
-    audioContext = null;
-    audioNodes = null;
-    audioActive = false;
-
-    audioToggleBtn.classList.remove("active");
-    audioToggleBtn.textContent = "Play";
-    audioToggleBtn.setAttribute("aria-pressed", "false");
-    showToast("The room has gone quiet.", "success");
-}
-
-function toggleAmbientMode() {
-    if (audioActive) {
-        stopAmbientMode();
-    } else {
-        startAmbientMode();
-    }
+            ? "Still waiting."
+            : "Return before leaving a piece.";
 }
 
 async function editPoem(poemId, currentContent, poemElement) {
@@ -1151,8 +918,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateCounters() {
-    animateMetric(poemCount, allPoems.length);
-    animateMetric(charCount, contentInput.value.length);
+    return;
 }
 
 function formatPoemContent(text, term) {
@@ -1187,17 +953,20 @@ function renderPoems() {
     if (filtered.length === 0) {
         const empty = document.createElement("div");
         empty.className = "empty";
-        empty.textContent = term ? "Nothing in the archive answers that search." : "The archive is quiet for now.";
+        empty.textContent = term ? "That line has not surfaced yet." : "Still waiting.";
         poemsContainer.appendChild(empty);
         return;
     }
 
     for (const [index, poem] of filtered.entries()) {
-        const card = document.createElement("details");
+        const card = document.createElement("article");
         card.className = "poem";
         card.dataset.poemId = poem.id;
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-label", `Open ${poem.title || "Untitled Piece"}`);
 
-        const summary = document.createElement("summary");
+        const summary = document.createElement("div");
         summary.className = "poem-summary";
 
         const top = document.createElement("div");
@@ -1215,18 +984,7 @@ function renderPoems() {
 
         const author = document.createElement("span");
         author.className = "poem-author";
-        author.textContent = `held by ${poem.author}`;
-        author.style.cursor = "pointer";
-        author.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openFocusMode(poem);
-        });
-
-        const category = document.createElement("span");
-        category.className = "poem-category";
-        if (poem.category) {
-            category.textContent = getCategoryLabel(poem.category);
-        }
+        author.textContent = `by ${poem.author}`;
 
         const metaRow = document.createElement("div");
         metaRow.className = "poem-meta";
@@ -1234,8 +992,6 @@ function renderPoems() {
             metaRow.appendChild(getMetaChip(getCategoryLabel(poem.category)));
         }
         metaRow.appendChild(getMetaChip(formatReadTime(poem.content)));
-
-        const favoriteBtn = createFirebaseFavoriteButton(poem);
 
         const isOwnPoem = currentUser && poem.userId === currentUser.uid;
         let deleteBtn = null;
@@ -1285,16 +1041,12 @@ function renderPoems() {
 
         top.appendChild(heading);
         top.appendChild(author);
-        if (poem.category) {
-            top.appendChild(category);
-        }
         top.appendChild(metaRow);
         if (deleteBtn) {
             top.appendChild(editBtn);
             top.appendChild(deleteBtn);
         }
         top.appendChild(time);
-        top.appendChild(favoriteBtn);
 
         summary.appendChild(top);
 
@@ -1322,54 +1074,21 @@ function renderPoems() {
             }
         }
 
-        const body = document.createElement("div");
-        body.className = "poem-body";
-
-        const paragraph = document.createElement("div");
-        paragraph.className = "poem-text";
-        paragraph.innerHTML = formatPoemContent(poem.content || "", term);
-
-        body.appendChild(createProgressPanel(poem));
-        body.appendChild(paragraph);
-
-        const notes = document.createElement("details");
-        notes.className = "poem-notes";
-        notes.innerHTML = `
-            <summary>Under the surface</summary>
-            <p>${escapeHtml(poem.notes || "A quiet note on the room, the hour, and what the piece is still carrying.")}</p>
-        `;
-        body.appendChild(notes);
-        body.appendChild(createCommentsSection(poem));
-
-        if (currentUser && poem.userId === currentUser.uid) {
-            const editPoemBtn = document.createElement("button");
-            editPoemBtn.className = "poem-edit-content-btn";
-            editPoemBtn.textContent = "Revise piece";
-            editPoemBtn.type = "button";
-            editPoemBtn.onclick = (e) => {
-                e.stopPropagation();
-                editPoem(poem.id, poem.content, card);
-            };
-            body.appendChild(editPoemBtn);
-        }
-
         card.appendChild(summary);
-        card.appendChild(body);
         poemsContainer.appendChild(card);
 
-        card.addEventListener("toggle", () => {
-            if (card.open) {
+        card.addEventListener("click", () => {
+            activeProgressPoemId = poem.id;
+            scheduleProgressSave(poem.id, Math.max(10, getProgressPercent(poem.id)));
+            openFocusMode(poem);
+        });
+
+        card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
                 activeProgressPoemId = poem.id;
                 scheduleProgressSave(poem.id, Math.max(10, getProgressPercent(poem.id)));
-                document.querySelectorAll(".poem[open]").forEach((other) => {
-                    if (other !== card) {
-                        other.open = false;
-                    }
-                });
-                window.setTimeout(updateActiveReadingProgress, 120);
-            } else if (activeProgressPoemId === poem.id) {
-                updateActiveReadingProgress();
-                activeProgressPoemId = null;
+                openFocusMode(poem);
             }
         });
 
@@ -1380,12 +1099,8 @@ function renderPoems() {
 
 searchInput.addEventListener("input", renderPoems);
 categoryFilter.addEventListener("change", renderPoems);
-audioToggleBtn.addEventListener("click", toggleAmbientMode);
-rainVolume?.addEventListener("input", applyAmbientVolumes);
-pianoVolume?.addEventListener("input", applyAmbientVolumes);
-vinylVolume?.addEventListener("input", applyAmbientVolumes);
 authToggleBtn?.addEventListener("click", toggleAuthSection);
-themeToggleBtn?.addEventListener("click", toggleTheme);
+themeToggleBtn?.addEventListener("click", openSignIn);
 menuToggleBtn?.addEventListener("click", () => {
     const expanded = mobileNav?.classList.toggle("active");
     menuToggleBtn?.setAttribute("aria-expanded", String(Boolean(expanded)));
@@ -1394,6 +1109,14 @@ document.querySelectorAll('.nav-links a').forEach((link) => link.addEventListene
     mobileNav?.classList.remove('active');
     menuToggleBtn?.setAttribute('aria-expanded', 'false');
 }));
+authNavLink?.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (currentUser) {
+        handleSignOut();
+    } else {
+        openSignIn();
+    }
+});
 
 loginBtn.addEventListener("click", handleSignIn);
 registerBtn.addEventListener("click", handleRegister);
@@ -1444,7 +1167,7 @@ poemForm.addEventListener("submit", async (e) => {
 
     if (saving) return;
     if (!currentUser) {
-        showToast("Sign in before placing a piece in the archive.", "error");
+        showToast("Return before leaving a piece.", "error");
         return;
     }
 
@@ -1475,10 +1198,10 @@ poemForm.addEventListener("submit", async (e) => {
             authorInput.value = currentUser.email?.split("@")[0] || "";
         }
         updateCounters();
-        showToast("The piece has entered the archive.", "success");
+        showToast("The piece is here.", "success");
     } catch (error) {
         console.error("Add poem failed:", error);
-        showToast("The piece could not enter the archive.", "error");
+        showToast("The piece could not be left here.", "error");
     } finally {
         setSavingState(false);
     }
@@ -1518,7 +1241,7 @@ onSnapshot(
         console.error("Realtime listener failed:", error);
         loadingIndicator.classList.remove("show");
         initialLoad = false;
-        showToast("The live archive is unreachable. Check Firestore rules or indexes.", "error");
+        showToast("The poems are out of reach for now.", "error");
     }
 );
 

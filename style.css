@@ -66,10 +66,10 @@ html {
 body {
     margin: 0;
     min-height: 100vh;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Lato", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: clamp(16px, 1.05vw, 18px);
     line-height: 1.9;
-    letter-spacing: 0.3px;
+    letter-spacing: 0;
     color: var(--text);
     background: radial-gradient(circle at top, rgba(244, 181, 93, 0.10), transparent 18%),
         linear-gradient(180deg, var(--bg), var(--bg-strong));
@@ -110,7 +110,8 @@ body::before {
 
 .intro-title {
     margin: 0 0 0.85rem;
-    font-family: "Playfair Display", serif;
+    font-family: "Cormorant Garamond", serif;
+    letter-spacing: 0.035em;
     font-size: clamp(3rem, 7vw, 4.8rem);
     line-height: 0.92;
 }
@@ -154,7 +155,7 @@ body::before {
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.35;
+    opacity: 0.22;
 }
 
 .bg-glow-1 {
@@ -196,8 +197,8 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-md);
-    padding: var(--space-sm) clamp(24px, 3vw, 48px);
+    gap: var(--space-sm);
+    padding: 10px clamp(16px, 2.5vw, 40px);
     background: rgba(8, 10, 18, 0.72);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(20px);
@@ -211,24 +212,24 @@ button {
 }
 
 .brand-mark {
-    width: 46px;
-    height: 46px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: rgba(244, 181, 93, 0.18);
     color: var(--accent);
     display: grid;
     place-items: center;
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     border: 1px solid rgba(244, 181, 93, 0.12);
 }
 
 .brand-name {
     display: block;
-    font-size: 0.98rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
@@ -250,8 +251,8 @@ button {
 .nav-links a {
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.95rem;
-    padding: 12px 10px;
+    font-size: 0.85rem;
+    padding: 8px 8px;
     border-radius: var(--radius-sm);
     transition: color var(--transition-fast), background var(--transition-fast);
 }
@@ -264,8 +265,8 @@ button {
 
 .mobile-menu-btn {
     display: none;
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     border-radius: var(--radius-sm);
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -300,16 +301,16 @@ button {
 
 .session-bar {
     display: flex;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
     align-items: center;
     flex-wrap: wrap;
     justify-content: flex-end;
-    min-width: min(240px, 100%);
+    min-width: min(200px, 100%);
 }
 
 .session-hint {
     margin: 0;
-    font-size: 0.88rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
 }
 
@@ -480,10 +481,10 @@ button {
 
 .hero-title {
     margin: 0;
-    font-family: "Playfair Display", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: clamp(3.2rem, 7.5vw, 6.6rem);
     line-height: 0.98;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.035em;
     max-width: 12ch;
     color: var(--text);
     text-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
@@ -526,10 +527,17 @@ button {
 
 .hero-panel-copy h2 {
     margin: 0;
-    font-family: "Playfair Display", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: clamp(1.8rem, 3.2vw, 2.4rem);
     line-height: 1.15;
+    letter-spacing: 0.035em;
     color: var(--text);
+}
+
+.hero-panel-copy p:not(.panel-eyebrow) {
+    margin: 0 0 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.85;
 }
 
 .panel-note {
@@ -752,9 +760,10 @@ button {
 
 .featured-head h2 {
     margin: 0;
-    font-family: "Playfair Display", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: clamp(2rem, 3.25vw, 2.75rem);
     line-height: 1.05;
+    letter-spacing: 0.035em;
 }
 
 .featured-grid {
@@ -772,6 +781,7 @@ button {
     border: 1px solid rgba(255, 255, 255, 0.10);
     backdrop-filter: blur(24px);
     box-shadow: var(--shadow-md);
+    cursor: pointer;
     transition: transform var(--transition-slow), border-color var(--transition-slow), background var(--transition-slow), box-shadow var(--transition-slow);
 }
 
@@ -805,9 +815,10 @@ button {
 
 .featured-card h3 {
     margin: 0 0 0.8rem;
-    font-family: "Playfair Display", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: clamp(1.55rem, 2.5vw, 2rem);
     line-height: 1.15;
+    letter-spacing: 0.035em;
 }
 
 .featured-card p {
@@ -945,7 +956,7 @@ button {
 
 .composer,
 .feed {
-    padding: var(--space-md);
+    padding: clamp(24px, 3.5vw, 40px);
 }
 
 .section-head {
@@ -958,8 +969,9 @@ button {
 
 .section-head h2 {
     margin: 0;
-    font-family: "Playfair Display", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: clamp(1.45rem, 2.5vw, 2rem);
+    letter-spacing: 0.035em;
 }
 
 .filters {
@@ -983,6 +995,7 @@ button {
 .search input,
 .filter select,
 .field input,
+.field select,
 .field textarea,
 .comment-form textarea {
     width: 100%;
@@ -995,9 +1008,28 @@ button {
     transition: border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
 }
 
+.filter select,
+.field select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #0e1020;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(247,244,238,0.55)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 38px;
+    cursor: pointer;
+}
+
+.filter select option,
+.field select option {
+    background-color: #0e1020;
+    color: var(--text);
+}
+
 .search input:focus,
 .filter select:focus,
 .field input:focus,
+.field select:focus,
 .field textarea:focus,
 .comment-form textarea:focus {
     border-color: rgba(244, 181, 93, 0.38);
@@ -1041,11 +1073,11 @@ button {
 
 .poems {
     display: grid;
-    gap: var(--space-sm);
+    gap: var(--space-md);
 }
 
 .poem {
-    overflow: hidden;
+    overflow: visible;
     border-radius: var(--radius-xl);
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.05);
@@ -1079,7 +1111,7 @@ button {
 .poem summary {
     list-style: none;
     cursor: pointer;
-    padding: var(--space-md);
+    padding: clamp(20px, 3vw, 32px) clamp(22px, 3.5vw, 36px);
     border-radius: var(--radius-xl);
     transition: background var(--transition-base), transform var(--transition-base);
 }
@@ -1096,16 +1128,19 @@ button {
 .poem-top {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-xs) var(--space-sm);
+    gap: var(--space-sm) var(--space-sm);
     align-items: center;
 }
 
 .poem-top h3 {
-    margin: 0;
+    margin: 0 0 0.2rem;
     flex: 1 1 100%;
-    font-family: "Playfair Display", serif;
-    font-size: clamp(1.35rem, 2.2vw, 1.85rem);
-    line-height: 1.08;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(1.3rem, 2.1vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+    padding-left: 2px;
+    overflow: visible;
 }
 
 .poem-top .poem-time {
@@ -1183,7 +1218,7 @@ button {
 }
 
 .poem-body {
-    padding: 0 var(--space-md) var(--space-md);
+    padding: 0 clamp(22px, 3.5vw, 36px) clamp(22px, 3vw, 32px);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
     border-bottom-left-radius: var(--radius-xl);
     border-bottom-right-radius: var(--radius-xl);
@@ -1191,10 +1226,10 @@ button {
 
 .poem-text {
     margin: 0;
-    font-family: "Cormorant Garamond", serif;
+    font-family: "Lato", ui-sans-serif, system-ui, sans-serif;
     font-size: clamp(1rem, 1.1vw, 1.18rem);
     line-height: 1.9;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     color: var(--text);
     white-space: pre-wrap;
 }
@@ -1231,9 +1266,10 @@ button {
 
 .poem-page h1 {
     margin: 0 0 28px;
-    font-family: "Playfair Display", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: clamp(2.4rem, 6vw, 4.8rem);
     line-height: 0.98;
+    letter-spacing: 0.035em;
 }
 
 .poem-notes {
@@ -1478,7 +1514,8 @@ button {
 .focus-poem h2 {
     margin: 0 0 1.2rem;
     font-size: clamp(2rem, 3.5vw, 2.75rem);
-    font-family: "Playfair Display", serif;
+    font-family: "Cormorant Garamond", serif;
+    letter-spacing: 0.035em;
 }
 
 .focus-poem .focus-author {
@@ -1492,7 +1529,7 @@ button {
     color: var(--text);
     font-size: clamp(1rem, 1.2vw, 1.22rem);
     line-height: 1.95;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     white-space: pre-wrap;
 }
 
@@ -1560,9 +1597,18 @@ button {
 
 @media (max-width: 560px) {
     .topbar {
-        flex-wrap: wrap;
-        padding-top: 18px;
-        padding-bottom: 18px;
+        flex-wrap: nowrap;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        gap: var(--space-xs);
+    }
+
+    .session-hint {
+        display: none;
+    }
+
+    .brand-name {
+        font-size: 0.78rem;
     }
 
     .hero-title {
@@ -1580,7 +1626,7 @@ button {
 
     .poem summary,
     .poem-body {
-        padding: var(--space-sm);
+        padding: clamp(18px, 4vw, 26px);
     }
 }
 
@@ -1603,7 +1649,7 @@ body.mobile-optimized {
 
 @media (max-width: 760px) {
     .poem-body {
-        padding: 0 12px 18px;
+        padding: 0 18px 22px;
     }
 
     .poem-text {
@@ -1675,7 +1721,19 @@ body.mobile-optimized {
     }
 
     .poem-body {
-        padding: 0 10px 14px;
+        padding: 0 16px 18px;
+    }
+
+    .poem summary {
+        padding: 18px 16px;
+    }
+
+    .poem-top h3 {
+        font-size: clamp(1.15rem, 5.5vw, 1.45rem);
+        line-height: 1.25;
+        padding-left: 2px;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
 }
 
