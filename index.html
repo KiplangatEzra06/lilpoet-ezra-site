@@ -25,7 +25,7 @@
     <meta name="twitter:description" content="Nairobi night poems on memory, solitude, longing, and becoming.">
     <meta name="twitter:image" content="https://kiplangatezra06.github.io/lilpoet-ezra-site/images/hero-share.png">
     <meta name="twitter:image:alt" content="Lilpoet Ezra poetry share card">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="images/logo.png" type="image/png">
     <link rel="sitemap" type="application/xml" href="sitemap.xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +46,7 @@
 
     <header class="topbar">
         <div class="topbar-brand">
-            <span class="brand-mark">L</span>
+            <img src="images/logo.png" alt="Lilpoet Ezra logo" class="brand-mark brand-logo" />
             <div>
                 <span class="brand-name">Lilpoet Ezra</span>
             </div>
@@ -58,13 +58,11 @@
         </button>
         <nav class="nav-links" id="mobileNav" aria-label="Primary navigation">
             <a href="#hero">Home</a>
-            <a href="#archive">Featured</a>
             <a href="#archive">Poems</a>
             <a id="authNavLink" href="#authSection">Sign In</a>
         </nav>
         <div class="session-bar">
             <p id="sessionHint" class="session-hint">A room for what survives the night.</p>
-            <button id="themeToggleBtn" type="button" class="btn-secondary">Sign In</button>
             <button id="signOutBtn" type="button" class="btn-secondary hidden">Sign Out</button>
         </div>
     </header>
@@ -99,11 +97,19 @@
             </div>
             <div class="hero-copy fade-reveal" style="animation-delay: 0.18s;">
                 <h1 class="hero-title">Lilpoet Ezra</h1>
-                <p class="hero-description">Lines for the hour when Nairobi lowers its voice and memory keeps walking.
-                </p>
+                <p class="hero-description">Poetry is a way of communicating in silence.</p>
                 <div class="hero-cta">
                     <a href="#archive" class="btn-primary">Start here</a>
                 </div>
+            </div>
+        </section>
+
+        <section class="quote-section" aria-label="Featured quote">
+            <div class="quote-card">
+                <blockquote class="quote-text">
+                    "What's in a name? That which we call a rose by any other name would smell as sweet."
+                </blockquote>
+                <cite class="quote-attribution">— Juliet, <em>Romeo and Juliet</em></cite>
             </div>
         </section>
 
@@ -221,7 +227,7 @@
     </main>
 
     <footer class="site-footer">
-        <p>&copy; 2026 Lilpoet Ezra - Written between the city lights and the quiet after.</p>
+        <p>&copy; 2026 Lilpoet Ezra</p>
     </footer>
 
     <div id="toast" class="toast" aria-live="polite"></div>
