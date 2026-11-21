@@ -101,22 +101,20 @@ let unsubscribeProgress = null;
 let activeProgressPoemId = null;
 let progressSaveTimers = new Map();
 
-requestAnimationFrame(() => shell?.classList.add("ready"));
-loadingIndicator.classList.add("show");
-
-enterBtn?.addEventListener("click", () => {
-    introScreen.classList.add("fade-out");
-    setTimeout(() => { introScreen.style.display = "none"; shell.classList.add("ready"); }, 800);
-});
+window.__lilpoetReady = true;
 
 function openFocusMode(poem) {
     focusPoem.innerHTML = `
         <h2>${escapeHtml(poem.title || "Untitled Piece")}</h2>
-        <div class="focus-author">by ${escapeHtml(poem.author)}</div>
+        <div class="focus-author">by ${escapeHtml(poem.author)}${
+            poem.category ? ` &middot; ${escapeHtml(getCategoryLabel(poem.category))}` : ""
+        }</div>
         <div class="focus-text">${escapeHtml(poem.content || "")}</div>
     `;
+    focusPoem.appendChild(createCommentsSection(poem));
     focusOverlay.classList.add("active");
     document.body.style.overflow = "hidden";
+    focusOverlay.scrollTop = 0;
     const url = new URL(window.location);
     url.hash = `#poem-${poem.id}`;
     window.history.replaceState(null, '', url);
@@ -125,6 +123,7 @@ function openFocusMode(poem) {
 function closeFocusMode() {
     focusOverlay.classList.remove("active");
     document.body.style.overflow = "";
+    focusPoem.innerHTML = "";
     const url = new URL(window.location);
     url.hash = '';
     window.history.replaceState(null, '', url);
@@ -352,9 +351,16 @@ function formatFirebaseAuthError(error) {
     return "The door would not open.";
 }
 
+const editionToggle = document.getElementById("editionToggle");
+
 function applyTheme(theme) {
-    document.documentElement.dataset.theme = theme === "light" ? "light" : "dark";
-    localStorage.setItem("lilpoet-theme", document.documentElement.dataset.theme);
+    if (typeof window.__applyEdition === "function") {
+        window.__applyEdition(theme);
+        return;
+    }
+    const resolved = theme === "night" ? "night" : "paper";
+    document.documentElement.dataset.theme = resolved;
+    try { localStorage.setItem("lilpoet-theme", resolved); } catch (e) { }
 }
 
 function setAuthSectionExpanded(expanded) {
@@ -583,41 +589,40 @@ function renderPoems() {
         const top = document.createElement("div");
         top.className = "poem-top";
 
+        const entryIndex = document.createElement("span");
+        entryIndex.className = "poem-index";
+        entryIndex.textContent = `No. ${String(index + 1).padStart(2, "0")}`;
+
         const heading = document.createElement("h3");
         heading.innerHTML = term ? highlightSearchTerm(poem.title || "Untitled Piece", term) : escapeHtml(poem.title || "Untitled Piece");
         heading.style.cursor = "pointer";
         heading.addEventListener("click", (e) => { e.stopPropagation(); openFocusMode(poem); });
+        top.appendChild(entryIndex);
+        top.appendChild(heading);
+
+        const plainText = (poem.content || "").replace(/\s+/g, " ").trim();
+        const excerpt = document.createElement("p");
+        excerpt.className = "poem-excerpt";
+        excerpt.textContent = plainText.length > 180
+            ? plainText.slice(0, 180).replace(/\s+\S*$/, "") + "…"
+            : plainText;
+
+        const byline = document.createElement("div");
+        byline.className = "poem-byline";
+
+        const isOwnPoem = currentUser && poem.userId === currentUser.uid;
 
         const author = document.createElement("span");
         author.className = "poem-author";
-        author.textContent = `by ${poem.author}`;
+        author.textContent = poem.author;
+        byline.appendChild(author);
 
-        // Category chip only — no read-time label
-        const metaRow = document.createElement("div");
-        metaRow.className = "poem-meta";
-        if (poem.category) metaRow.appendChild(getMetaChip(getCategoryLabel(poem.category)));
-
-        const isOwnPoem = currentUser && poem.userId === currentUser.uid;
-        let editBtn = null, deleteBtn = null;
-        if (isOwnPoem) {
-            editBtn = document.createElement("button");
-            editBtn.className = "poem-edit-btn"; editBtn.textContent = "Revise"; editBtn.type = "button";
-            editBtn.title = "Revise this piece";
-            editBtn.onclick = (e) => { e.stopPropagation(); editPoem(poem.id, poem.content, card); };
-
-            deleteBtn = document.createElement("button");
-            deleteBtn.className = "poem-delete-btn"; deleteBtn.textContent = "Remove"; deleteBtn.type = "button";
-            deleteBtn.title = "Remove this piece";
-            deleteBtn.addEventListener("click", async (e) => { e.stopPropagation(); await deletePoem(poem.id); });
+        if (poem.category) {
+            const category = document.createElement("span");
+            category.className = "poem-category";
+            category.textContent = getCategoryLabel(poem.category);
+            byline.appendChild(category);
         }
-
-        // Timestamp — right-padded so it never clips
-        const time = document.createElement("span");
-        time.className = "poem-time";
-        const createdDate = poem.createdAt ? new Date(poem.createdAt.toDate ? poem.createdAt.toDate() : poem.createdAt) : new Date();
-        const updatedDate = poem.updatedAt ? new Date(poem.updatedAt.toDate ? poem.updatedAt.toDate() : poem.updatedAt) : createdDate;
-        time.textContent = formatDate(updatedDate);
-        time.title = `Entered: ${createdDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}${poem.updatedAt ? `\nRevised: ${updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}` : ''}`;
 
         // Like button — localStorage, no login required
         const likeBtn = document.createElement("button");
@@ -632,17 +637,34 @@ function renderPoems() {
             likeBtn.querySelector(".like-heart").textContent = nowLiked ? "♥" : "♡";
             likeBtn.querySelector(".like-count").textContent = getLikeCount(poem.id);
             likeBtn.classList.add("pulse");
-            setTimeout(() => likeBtn.classList.remove("pulse"), 350);
+            setTimeout(() => likeBtn.classList.remove("pulse"), 380);
         });
+        byline.appendChild(likeBtn);
 
-        top.appendChild(heading);
-        top.appendChild(author);
-        top.appendChild(metaRow);
-        if (editBtn) top.appendChild(editBtn);
-        if (deleteBtn) top.appendChild(deleteBtn);
-        top.appendChild(likeBtn);
-        top.appendChild(time);
+        if (isOwnPoem) {
+            const editBtn = document.createElement("button");
+            editBtn.className = "poem-edit-btn"; editBtn.textContent = "Revise"; editBtn.type = "button";
+            editBtn.title = "Revise this piece";
+            editBtn.onclick = (e) => { e.stopPropagation(); editPoem(poem.id, poem.content, card); };
+            byline.appendChild(editBtn);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "poem-delete-btn"; deleteBtn.textContent = "Remove"; deleteBtn.type = "button";
+            deleteBtn.title = "Remove this piece";
+            deleteBtn.addEventListener("click", async (e) => { e.stopPropagation(); await deletePoem(poem.id); });
+            byline.appendChild(deleteBtn);
+        }
+
+        const time = document.createElement("span");
+        time.className = "poem-time";
+        const createdDate = poem.createdAt ? new Date(poem.createdAt.toDate ? poem.createdAt.toDate() : poem.createdAt) : new Date();
+        const updatedDate = poem.updatedAt ? new Date(poem.updatedAt.toDate ? poem.updatedAt.toDate() : poem.updatedAt) : createdDate;
+        time.textContent = formatDate(updatedDate);
+        time.title = `Entered: ${createdDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}${poem.updatedAt ? `\nRevised: ${updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}` : ''}`;
+        byline.appendChild(time);
+
         summary.appendChild(top);
+        summary.appendChild(excerpt);
 
         if (term) {
             const titleMatch = (poem.title || "").toLowerCase().includes(term);
@@ -667,6 +689,7 @@ function renderPoems() {
             }
         }
 
+        summary.appendChild(byline);
         card.appendChild(summary);
         poemsContainer.appendChild(card);
 
@@ -691,14 +714,6 @@ function renderPoems() {
 searchInput.addEventListener("input", renderPoems);
 categoryFilter.addEventListener("change", renderPoems);
 authToggleBtn?.addEventListener("click", toggleAuthSection);
-menuToggleBtn?.addEventListener("click", () => {
-    const expanded = mobileNav?.classList.toggle("active");
-    menuToggleBtn?.setAttribute("aria-expanded", String(Boolean(expanded)));
-});
-document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => {
-    mobileNav?.classList.remove('active');
-    menuToggleBtn?.setAttribute('aria-expanded', 'false');
-}));
 authNavLink?.addEventListener("click", (e) => {
     e.preventDefault();
     if (currentUser) handleSignOut();

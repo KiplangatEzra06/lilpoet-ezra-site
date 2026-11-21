@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="paper">
 
 <head>
     <meta charset="UTF-8" />
@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Lato:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=IBM+Plex+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
 </head>
@@ -38,173 +38,126 @@
 <body>
     <div id="intro-screen" class="intro-screen">
         <div class="intro-content">
-            <h1 class="intro-title">Lilpoet Ezra</h1>
-            <p class="intro-subtitle">Night keeps its witnesses.</p>
-            <button id="enter-btn" class="enter-btn">Enter quietly</button>
+            <p class="intro-kicker">Nairobi &middot; after dark</p>
+            <h1 class="intro-title">Lilpoet<br>Ezra</h1>
+            <p class="intro-subtitle">Night keeps its witnesses.<br>Stay a while.</p>
+            <button id="enter-btn" class="enter-btn" type="button">Open the journal</button>
         </div>
     </div>
 
+    <a class="skip-link" href="#archive">Skip to poems</a>
+
     <header class="topbar">
         <div class="topbar-brand">
-            <img src="favicon.svg" alt="Lilpoet Ezra logo" class="brand-mark brand-logo" />
+            <img src="favicon.svg" alt="" class="brand-logo" />
             <div>
                 <span class="brand-name">Lilpoet Ezra</span>
+                <span class="brand-tag">a journal of night</span>
             </div>
         </div>
+
         <button id="menuToggleBtn" class="mobile-menu-btn" aria-expanded="false" aria-label="Open navigation">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span>
         </button>
+
         <nav class="nav-links" id="mobileNav" aria-label="Primary navigation">
-            <a href="#hero">Home</a>
+            <a href="#hero">Front</a>
             <a href="#archive">Poems</a>
-            <a id="authNavLink" href="#authSection">Sign In</a>
+            <a id="authNavLink" href="#authSection">Sign in</a>
         </nav>
-        <div class="session-bar">
-            <p id="sessionHint" class="session-hint">A room for what survives the night.</p>
-            <button id="signOutBtn" type="button" class="btn-secondary hidden">Sign Out</button>
+
+        <div class="topbar-tools">
+            <div class="session-bar">
+                <p id="sessionHint" class="session-hint">A room for what survives the night.</p>
+                <button id="signOutBtn" type="button" class="btn-ghost hidden">Sign out</button>
+            </div>
+            <button id="editionToggle" type="button" class="edition-toggle" aria-pressed="false"
+                title="Switch between the paper and night editions">
+                <span class="edition-dot" aria-hidden="true"></span>
+                <span class="edition-label">Night edition</span>
+            </button>
         </div>
     </header>
 
     <div id="focus-overlay" class="focus-overlay" role="dialog" aria-modal="true" aria-label="Opened poem">
         <div class="focus-content">
-            <button id="close-focus" class="btn-secondary" type="button">Back</button>
+            <button id="close-focus" class="close-focus-btn" type="button">Close poem</button>
             <div id="focus-poem" class="focus-poem"></div>
         </div>
     </div>
 
-    <div class="bg-glow bg-glow-1"></div>
-    <div class="bg-glow bg-glow-2"></div>
-
     <main class="shell">
         <section id="hero" class="hero">
-            <div class="hero-backdrop" aria-hidden="true">
-                <div class="hero-layers"></div>
-                <div class="hero-particles">
-                    <span style="--i:0"></span>
-                    <span style="--i:1"></span>
-                    <span style="--i:2"></span>
-                    <span style="--i:3"></span>
-                    <span style="--i:4"></span>
-                    <span style="--i:5"></span>
-                    <span style="--i:6"></span>
-                    <span style="--i:7"></span>
-                    <span style="--i:8"></span>
-                    <span style="--i:9"></span>
-                </div>
-                <div class="hero-grain"></div>
-            </div>
-            <div class="hero-copy fade-reveal" style="animation-delay: 0.18s;">
-                <h1 class="hero-title">Lilpoet Ezra</h1>
-                <p class="hero-description">Poetry is a way of communicating in silence.</p>
+            <div class="hero-copy">
+                <p class="hero-kicker">
+                    <span class="rule-mark" aria-hidden="true"></span>
+                    Poems from a city that never quite sleeps
+                </p>
+                <h1 class="hero-title">
+                    <span>What the night</span>
+                    <span class="hero-title-line">leaves behind.</span>
+                </h1>
+                <p class="hero-description">
+                    Lilpoet Ezra writes from Nairobi rooftops and lit windows — about longing that refuses
+                    to announce itself, dust that learns your name, and the small mercies that keep a person
+                    walking home.
+                </p>
                 <div class="hero-cta">
-                    <a href="#archive" class="btn-primary">Start here</a>
+                    <a href="#archive" class="btn-primary">Read the poems</a>
+                    <a href="#composer" class="btn-text">Leave one of your own</a>
                 </div>
             </div>
-        </section>
 
-        <section class="quote-section" aria-label="Featured quote">
-            <div class="quote-card">
-                <blockquote class="quote-text">
-                    "What's in a name? That which we call a rose by any other name would smell as sweet."
-                </blockquote>
-                <cite class="quote-attribution">— Juliet, <em>Romeo and Juliet</em></cite>
-            </div>
-        </section>
-
-        <section id="authSection" class="auth-section collapsed">
-            <div class="card auth-card">
-                <div class="auth-content">
-                    <button id="authToggleBtn" class="auth-toggle" type="button" aria-expanded="false"
-                        aria-controls="authForm">
-                        <span class="auth-toggle-copy">
-                            <span class="auth-toggle-title">Return to leave a trace</span>
-                            <span class="auth-toggle-subtitle">Keep the poems that follow you, mark your place, and add
-                                a response without breaking the silence.</span>
-                        </span>
-                        <span class="auth-toggle-icon" aria-hidden="true"></span>
-                    </button>
-                    <div id="authForm" class="auth-form hidden">
-                        <label class="field">
-                            <span>Email</span>
-                            <input id="emailInput" type="email" placeholder="name@nightmail.com"
-                                autocomplete="username" />
-                        </label>
-                        <label class="field">
-                            <span>Passphrase</span>
-                            <input id="passwordInput" type="password" placeholder="Keep it private"
-                                autocomplete="current-password" />
-                        </label>
-                        <div class="auth-actions">
-                            <button id="loginBtn" type="button" class="btn-secondary">Sign In</button>
-                            <button id="registerBtn" type="button" class="btn-secondary">Start here</button>
-                        </div>
-                    </div>
-                    <div class="auth-status compact">
-                        <p id="authState" class="auth-state">Open to anyone who writes quietly.</p>
-                    </div>
+            <figure class="hero-plate">
+                <div class="plate-sky" aria-hidden="true">
+                    <span class="plate-moon"></span>
+                    <span class="plate-star s1"></span>
+                    <span class="plate-star s2"></span>
+                    <span class="plate-star s3"></span>
+                    <span class="plate-star s4"></span>
+                    <svg class="plate-skyline" viewBox="0 0 640 260" preserveAspectRatio="none" role="presentation">
+                        <path d="M0 218 H48 V150 H78 V218 H104 V118 H126 V218 H158 V168 H196 V218 H220 V96 H232 V74 H244 V96 H262 V218
+                                 H292 V176 H330 V218 H352 V132 H384 V218 H414 V158 H452 V218 H474 V108 H492 V88 H508 V108 H534 V218
+                                 H566 V144 H600 V218 H640 V260 H0 Z" fill="currentColor" opacity="0.92" />
+                        <g fill="currentColor" opacity="0.9">
+                            <rect x="226" y="112" width="6" height="4" /><rect x="236" y="112" width="6" height="4" />
+                            <rect x="226" y="124" width="6" height="4" /><rect x="478" y="124" width="6" height="4" />
+                            <rect x="488" y="124" width="6" height="4" /><rect x="488" y="138" width="6" height="4" />
+                        </g>
+                        <path d="M0 226 C120 214, 220 232, 320 224 S520 214, 640 228" fill="none" stroke="currentColor"
+                            stroke-width="1.5" opacity="0.5" />
+                    </svg>
                 </div>
-            </div>
+                <figcaption class="plate-caption">
+                    <span class="plate-index">Plate one</span>
+                    <span>Rooftop, Nairobi &mdash; 00:14</span>
+                </figcaption>
+            </figure>
         </section>
 
-        <section class="layout" aria-labelledby="composerHeading">
-            <article class="card composer">
-                <div class="section-head">
-                    <h2 id="composerHeading">The ocean is wide. Add your drop.</h2>
-                </div>
+        <section class="statement" aria-label="Featured line">
+            <blockquote>
+                <p>&ldquo;Poetry is a way of communicating in silence.&rdquo;</p>
+                <footer>Lilpoet Ezra</footer>
+            </blockquote>
+        </section>
 
-                <form id="poemForm" class="form">
-                    <label class="field">
-                        <span>Name</span>
-                        <input id="authorInput" type="text" placeholder="How the night should know you" maxlength="60"
-                            autocomplete="off" />
-                    </label>
-
-                    <label class="field">
-                        <span>Title</span>
-                        <input id="titleInput" type="text" placeholder="Name the ache plainly" maxlength="80"
-                            autocomplete="off" />
-                    </label>
-
-                    <label class="field">
-                        <span>Category</span>
-                        <select id="categoryInput">
-                            <option value="love">Love &amp; Longing</option>
-                            <option value="nature">Earth &amp; Weather</option>
-                            <option value="life">Life &amp; Becoming</option>
-                            <option value="social">City &amp; Witness</option>
-                            <option value="spiritual">Spirit &amp; Silence</option>
-                            <option value="personal">Self &amp; Survival</option>
-                            <option value="other">Elsewhere</option>
-                        </select>
-                    </label>
-
-                    <label class="field">
-                        <span>Your poem</span>
-                        <textarea id="contentInput" placeholder="Write what survived the night." rows="10"
-                            maxlength="5000"></textarea>
-                    </label>
-
-                    <div class="form-footer">
-                        <p id="statusText" class="status">Still waiting.</p>
-                        <button id="submitBtn" type="submit" class="btn-primary">Add</button>
+        <section class="layout" aria-labelledby="galleryHeading">
+            <article id="archive" class="feed">
+                <header class="section-head">
+                    <div>
+                        <h2 id="galleryHeading">The archive</h2>
+                        <p class="section-note">Pieces left here by the poet and by readers who came after dark.</p>
                     </div>
-                </form>
-            </article>
-
-            <article id="archive" class="card feed" aria-labelledby="galleryHeading">
-                <div class="section-head">
-                    <h2 id="galleryHeading">Archive</h2>
                     <div class="filters">
                         <label class="search">
-                            <span>Search</span>
-                            <input id="searchInput" type="text" placeholder="Find a line..." autocomplete="off" />
+                            <span class="visually-hidden">Search poems</span>
+                            <input id="searchInput" type="text" placeholder="Find a line&hellip;" autocomplete="off" />
                         </label>
                         <label class="filter">
-                            <span>Category</span>
+                            <span class="visually-hidden">Filter by category</span>
                             <select id="categoryFilter">
-                                <option value="">All</option>
+                                <option value="">Everything</option>
                                 <option value="love">Love &amp; Longing</option>
                                 <option value="nature">Earth &amp; Weather</option>
                                 <option value="life">Life &amp; Becoming</option>
@@ -215,23 +168,255 @@
                             </select>
                         </label>
                     </div>
-                </div>
+                </header>
 
+                <div class="archive-rule" aria-hidden="true"></div>
                 <div id="poemsContainer" class="poems"></div>
                 <div id="loadingIndicator" class="loading-indicator">
-                    <div class="loading-spinner"></div>
-                    <p>Loading poems...</p>
+                    <p>Gathering the pages&hellip;</p>
                 </div>
             </article>
+
+            <aside class="sidebar">
+                <section id="authSection" class="auth-section">
+                    <h2 class="sidebar-title">The guest book</h2>
+                    <div class="auth-content">
+                        <button id="authToggleBtn" class="auth-toggle" type="button" aria-expanded="false"
+                            aria-controls="authForm">
+                            <span class="auth-toggle-title">Sign in to leave a trace</span>
+                            <span class="auth-toggle-subtitle">Keep the poems that follow you, mark your place,
+                                and add a response.</span>
+                            <span class="auth-toggle-icon" aria-hidden="true"></span>
+                        </button>
+                        <div id="authForm" class="auth-form hidden">
+                            <label class="field">
+                                <span>Email</span>
+                                <input id="emailInput" type="email" placeholder="name@nightmail.com"
+                                    autocomplete="username" />
+                            </label>
+                            <label class="field">
+                                <span>Passphrase</span>
+                                <input id="passwordInput" type="password" placeholder="Keep it private"
+                                    autocomplete="current-password" />
+                            </label>
+                            <div class="auth-actions">
+                                <button id="loginBtn" type="button" class="btn-primary">Sign in</button>
+                                <button id="registerBtn" type="button" class="btn-text">Make an account</button>
+                            </div>
+                        </div>
+                        <p id="authState" class="auth-state">Open to anyone who writes quietly.</p>
+                    </div>
+                </section>
+
+                <section id="composer" class="composer" aria-labelledby="composerHeading">
+                    <h2 class="sidebar-title" id="composerHeading">Add your drop</h2>
+                    <p class="sidebar-note">The ocean is wide. One piece at a time.</p>
+                    <form id="poemForm" class="form">
+                        <label class="field">
+                            <span>Name</span>
+                            <input id="authorInput" type="text" placeholder="How the night should know you"
+                                maxlength="60" autocomplete="off" />
+                        </label>
+                        <label class="field">
+                            <span>Title</span>
+                            <input id="titleInput" type="text" placeholder="Name the ache plainly" maxlength="80"
+                                autocomplete="off" />
+                        </label>
+                        <label class="field">
+                            <span>Category</span>
+                            <select id="categoryInput">
+                                <option value="love">Love &amp; Longing</option>
+                                <option value="nature">Earth &amp; Weather</option>
+                                <option value="life">Life &amp; Becoming</option>
+                                <option value="social">City &amp; Witness</option>
+                                <option value="spiritual">Spirit &amp; Silence</option>
+                                <option value="personal">Self &amp; Survival</option>
+                                <option value="other">Elsewhere</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>Your poem</span>
+                            <textarea id="contentInput" placeholder="Write what survived the night." rows="9"
+                                maxlength="5000"></textarea>
+                        </label>
+                        <div class="form-footer">
+                            <p id="statusText" class="status">Still waiting.</p>
+                            <button id="submitBtn" type="submit" class="btn-primary">Add the piece</button>
+                        </div>
+                    </form>
+                </section>
+            </aside>
         </section>
     </main>
 
     <footer class="site-footer">
-        <p>&copy; 2026 Lilpoet Ezra</p>
+        <div class="footer-mark" aria-hidden="true">
+            <span></span><span></span><span></span>
+        </div>
+        <p class="footer-line">Written in Nairobi. Read wherever the night finds you.</p>
+        <p class="footer-copy">&copy; 2026 Lilpoet Ezra</p>
     </footer>
 
     <div id="toast" class="toast" aria-live="polite"></div>
 
+    <script>
+        // Runs before the module so the page is usable even if the live feed is unreachable.
+        (function () {
+            var root = document.documentElement;
+            var stored = null;
+            try { stored = localStorage.getItem("lilpoet-theme"); } catch (e) { }
+            root.dataset.theme = stored === "night" ? "night" : "paper";
+
+            var toggle = document.getElementById("editionToggle");
+            var label = toggle && toggle.querySelector(".edition-label");
+
+            function paintEdition() {
+                if (!toggle || !label) return;
+                var isNight = root.dataset.theme === "night";
+                toggle.setAttribute("aria-pressed", String(isNight));
+                label.textContent = isNight ? "Paper edition" : "Night edition";
+                toggle.title = isNight ? "Switch to the paper edition" : "Switch to the night edition";
+            }
+
+            window.__applyEdition = function (theme) {
+                root.dataset.theme = theme === "night" ? "night" : "paper";
+                try { localStorage.setItem("lilpoet-theme", root.dataset.theme); } catch (e) { }
+                paintEdition();
+            };
+
+            paintEdition();
+            toggle && toggle.addEventListener("click", function () {
+                window.__applyEdition(root.dataset.theme === "night" ? "paper" : "night");
+            });
+
+            var intro = document.getElementById("intro-screen");
+            var enter = document.getElementById("enter-btn");
+            var shell = document.querySelector(".shell");
+
+            function openJournal() {
+                if (!intro || intro.classList.contains("fade-out")) return;
+                intro.classList.add("fade-out");
+                shell && shell.classList.add("ready");
+                setTimeout(function () { intro.style.display = "none"; }, 750);
+            }
+
+            enter && enter.addEventListener("click", openJournal);
+            intro && intro.addEventListener("click", function (e) { if (e.target === intro) openJournal(); });
+            document.addEventListener("keydown", function (e) {
+                if (e.key !== "Escape") return;
+                if (overlay && overlay.classList.contains("active")) {
+                    overlay.classList.remove("active");
+                    document.body.style.overflow = "";
+                    return;
+                }
+                openJournal();
+            });
+
+            var menuBtn = document.getElementById("menuToggleBtn");
+            var nav = document.getElementById("mobileNav");
+            menuBtn && menuBtn.addEventListener("click", function () {
+                var open = nav.classList.toggle("active");
+                menuBtn.setAttribute("aria-expanded", String(open));
+            });
+            nav && nav.querySelectorAll("a").forEach(function (link) {
+                link.addEventListener("click", function () {
+                    nav.classList.remove("active");
+                    menuBtn && menuBtn.setAttribute("aria-expanded", "false");
+                });
+            });
+
+            // If the live archive cannot load, still show the published pieces.
+            var PUBLISHED = [
+                {
+                    title: "Midnight on a Nairobi Rooftop",
+                    category: "City & Witness",
+                    content: "At midnight, Nairobi keeps its face half-lit.\nThe rooftops hold their breath.\nBelow, engines pass like tired prayers,\nand I stand where the wind can find me,\nwatching the city turn loneliness into light.\n\nYour name does not arrive.\nOnly smoke from an old hope\nlifting slowly from the chest,\nthin as a prayer that already knows\nthe sky will not answer.\n\nThe hours lengthen.\nMemory moves through me without hurry.\nI learn again how silence can bruise\nwithout making a sound.\n\nSomeone has lost a phone.\nI wipe my face before she sees it,\nborrow a calm voice,\nand ask, \"Ulipoteza wapi?\"\nas if I am not also searching.\n\nWe find what she lost.\nHer relief returns clean and immediate.\nMine stays somewhere above the street,\ncaught between the moon,\nthe rooftop,\nand the thing I cannot recover.\n\nThe city keeps moving.\nThat is its mercy.\nThat is also its cruelty."
+                },
+                {
+                    title: "Utaona Dust",
+                    category: "Self & Survival",
+                    content: "The road does not argue.\nIt waits under the shoe,\nunder the matatu smoke,\nunder the late call\nyou almost did not answer.\n\nBy morning,\ndust has learned your name.\n\nIt gathers at the hem,\nat the ankle,\ninside the small silence\nbetween what you wanted\nand what Nairobi allowed.\n\nStill, you walk.\nNot loudly.\nNot as proof.\n\nYou walk because the body\nhas its own old faith,\nbecause home is sometimes\nonly a direction,\nbecause the night can take plenty\nand still leave you\nwith one more breath.\n\nUtaona dust,\nthey said.\n\nAnd you did.\n\nYou saw it rise\nbehind every leaving,\nsoft as memory,\npatient as grief,\ngold in the headlights\nfor one brief second\nbefore darkness\nclosed its hand."
+                },
+                {
+                    title: "The Weight of Hope",
+                    category: "Love & Longing",
+                    content: "Remind me of the days, long forgotten,\nwhen heart and mind moved as one,\nwhen a smile ruled my face\nand joy left no trace of doubt.\n\nRemind me how I loved her smile,\nhow it caught me off guard,\nslipped into my being,\nteaching me what alive is.\n\nShe gave me a reason--\nfragile, human, mortal--\nand I held it like a quiet prayer.\n\nRemind me of the nights I dreamed of her,\nhope throbbed weak and stubborn,\nbut enough to remind me I was alive.\n\nHer response didn't break me.\nIt simply turned off the pulse,\nand the dark settled in the spaces she left behind.\n\nRemind me how I planned to move on,\nyet never did,\nclinging to a hope long gone,\nstill scarred,\nstill relentless."
+                },
+                {
+                    title: "When the Candle Tilted",
+                    category: "Spirit & Silence",
+                    content: "When the candle tilted,\nthe room did not panic.\n\nIt only shifted its shadows\nacross the wall\nlike people leaving\nwithout wanting to be heard.\n\nOutside,\nNairobi kept moving:\na boda passing,\na gate closing,\nrain considering the roof\nthen choosing restraint.\n\nInside,\nyour name stayed\nwhere I had left it,\nnear the matchbox,\nnear the cup gone cold,\nnear the sentence\nI had no courage to finish.\n\nThe flame leaned.\n\nFor a moment,\neverything became honest:\nthe table,\nthe dust,\nthe small ache\nthat had been sitting with me\nall evening\nwithout asking for space.\n\nI steadied the candle.\nI did not steady myself.\n\nSome light survives\nby bending first."
+                }
+            ];
+
+            var containers = document.getElementById("poemsContainer");
+            var overlay = document.getElementById("focus-overlay");
+            var focusPoem = document.getElementById("focus-poem");
+            var fallbackRendered = false;
+
+            function esc(v) {
+                return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+            }
+
+            function renderPublished() {
+                if (!containers || fallbackRendered) return;
+                fallbackRendered = true;
+                var loading = document.getElementById("loadingIndicator");
+                loading && loading.classList.remove("show");
+                containers.innerHTML = "";
+
+                PUBLISHED.forEach(function (poem, i) {
+                    var row = document.createElement("article");
+                    row.className = "poem animate-in";
+                    row.tabIndex = 0;
+                    row.setAttribute("role", "button");
+                    row.setAttribute("aria-label", "Open " + poem.title);
+                    var plain = poem.content.replace(/\s+/g, " ").trim();
+                    row.innerHTML =
+                        '<div class="poem-summary">' +
+                        '<div class="poem-top"><span class="poem-index">No. ' + String(i + 1).padStart(2, "0") + "</span>" +
+                        "<h3>" + esc(poem.title) + "</h3></div>" +
+                        '<p class="poem-excerpt">' + esc(plain.length > 180 ? plain.slice(0, 180).replace(/\s+\S*$/, "") + "…" : plain) + "</p>" +
+                        '<div class="poem-byline"><span class="poem-author">Lilpoet Ezra</span>' +
+                        '<span class="poem-category">' + esc(poem.category) + "</span>" +
+                        '<span class="poem-time">From the archive</span></div></div>';
+                    row.addEventListener("click", function () { showPublished(poem); });
+                    row.addEventListener("keydown", function (e) {
+                        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showPublished(poem); }
+                    });
+                    containers.appendChild(row);
+                });
+            }
+
+            function showPublished(poem) {
+                if (!overlay || !focusPoem) return;
+                focusPoem.innerHTML =
+                    "<h2>" + esc(poem.title) + "</h2>" +
+                    '<div class="focus-author">by Lilpoet Ezra &middot; ' + esc(poem.category) + "</div>" +
+                    '<div class="focus-text">' + esc(poem.content) + "</div>";
+                overlay.classList.add("active");
+                document.body.style.overflow = "hidden";
+                overlay.scrollTop = 0;
+            }
+
+            var closeBtn = document.getElementById("close-focus");
+            closeBtn && closeBtn.addEventListener("click", function () {
+                overlay.classList.remove("active");
+                document.body.style.overflow = "";
+            });
+            overlay && overlay.addEventListener("click", function (e) {
+                if (e.target === overlay) {
+                    overlay.classList.remove("active");
+                    document.body.style.overflow = "";
+                }
+            });
+
+            // The module sets this flag once Firebase is live and takes over rendering.
+            setTimeout(function () {
+                if (!window.__lilpoetReady) renderPublished();
+            }, 1600);
+        })();
+    </script>
     <script type="module" src="script.js"></script>
 </body>
 
